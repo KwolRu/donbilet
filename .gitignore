@@ -69,3 +69,12 @@ vps/
 .gemini/skills/*
 !.gemini/skills/feature-pattern/
 !.gemini/skills/figma-to-front/
+/01_СТАРЫЙ_ПРОЕКТ
+
+/.gemini
+.gemini
+/.codex
+/.claude
+.codex/**
+.claude/**
+.gemini/**
