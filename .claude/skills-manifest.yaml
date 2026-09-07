@@ -1,0 +1,281 @@
+# Портфель скиллов шаблона.
+#
+# Источник правды о том, какие скиллы входят в шаблон, откуда они берутся и как
+# синхронизируются между каталогами агентов. Проверяется `npm run skills:check`,
+# синхронизируется `npm run skills:sync`.
+#
+# ── Режимы ────────────────────────────────────────────────────────────────────
+#   automatic    Claude подключает сам по описанию. Ядро повседневной работы.
+#   conditional  Тоже автоматические, но срабатывают только в своей области
+#                (фронт, AI, сбор данных). В проекте без этой области не мешают.
+#   optional     Полезны, но не обязательны; можно удалить без последствий.
+#   manual       Только явный вызов `/<name>`. В frontmatter обязателен
+#                `disable-model-invocation: true` — тогда даже описание не
+#                попадает в контекст. Сюда идёт всё, что делает операции с
+#                внешними системами или перестраивает проект целиком.
+#
+# ── Поля ──────────────────────────────────────────────────────────────────────
+#   name       каноническое имя = имя каталога = поле `name` в SKILL.md
+#   source     откуда пришёл: template (написан для шаблона) | codex (.codex/skills)
+#              | vendor (сторонний, не редактируем)
+#   required   true — часть шаблона, удаление ломает описанный workflow
+#   sync       каталоги агентов, куда раскладывается копия
+#   overlaps   соседние скиллы с пересекающейся темой: при правке одного
+#              проверить, не разъехался ли другой
+#   files      что должно физически присутствовать (проверяет skills:check)
+
+version: 1
+
+skills:
+  # ── automatic: ядро ─────────────────────────────────────────────────────────
+  - name: feature-pattern
+    mode: automatic
+    source: template
+    required: true
+    sync: [.claude, .codex, .gemini]
+    overlaps: [api-design, database-migrations, backend-patterns]
+    files: [SKILL.md, assets/module-template, references]
+    note: >-
+      Сквозной путь фичи. Единственный скилл, описывающий tenant-контур целиком;
+      при изменении ADR-0002 правится в первую очередь.
+
+  - name: figma-to-front
+    mode: automatic
+    source: template
+    required: true
+    sync: [.claude, .codex, .gemini]
+    overlaps: [vercel-react-best-practices, vercel-composition-patterns, web-design-guidelines]
+    files: [SKILL.md, assets, references]
+    note: >-
+      Вёрстка из Figma → фронт по конвенциям проекта. Дизайн-систему НЕ задаёт:
+      она своя в каждом продукте.
+
+  - name: coding-standards
+    mode: automatic
+    source: codex
+    required: true
+    sync: [.claude]
+    overlaps: [feature-pattern]
+    files: [SKILL.md]
+
+  - name: verification-loop
+    mode: automatic
+    source: codex
+    required: true
+    sync: [.claude]
+    overlaps: [e2e-testing]
+    files: [SKILL.md]
+
+  - name: api-design
+    mode: automatic
+    source: codex
+    required: true
+    sync: [.claude]
+    overlaps: [feature-pattern]
+    files: [SKILL.md]
+
+  - name: database-migrations
+    mode: automatic
+    source: codex
+    required: true
+    sync: [.claude]
+    overlaps: [feature-pattern, postgres-patterns]
+    files: [SKILL.md]
+
+  - name: security-review
+    mode: automatic
+    source: codex
+    required: true
+    sync: [.claude]
+    overlaps: [feature-pattern]
+    files: [SKILL.md]
+
+  # ── conditional: backend / инфраструктура ───────────────────────────────────
+  - name: nestjs-best-practices
+    mode: conditional
+    scope: backend
+    source: vendor
+    required: false
+    sync: [.claude]
+    overlaps: [feature-pattern, api-design]
+    files: [SKILL.md]
+
+  - name: postgres-patterns
+    mode: conditional
+    scope: backend
+    source: codex
+    required: false
+    sync: [.claude]
+    overlaps: [database-migrations]
+    files: [SKILL.md]
+
+  - name: docker-patterns
+    mode: conditional
+    scope: infra
+    source: codex
+    required: false
+    sync: [.claude]
+    overlaps: [deployment-patterns]
+    files: [SKILL.md]
+
+  - name: deployment-patterns
+    mode: conditional
+    scope: infra
+    source: codex
+    required: false
+    sync: [.claude]
+    overlaps: [docker-patterns]
+    files: [SKILL.md]
+
+  - name: e2e-testing
+    mode: conditional
+    scope: testing
+    source: codex
+    required: false
+    sync: [.claude]
+    overlaps: [verification-loop]
+    files: [SKILL.md]
+
+  # ── conditional: frontend-практики ──────────────────────────────────────────
+  # Переносимые между проектами. Дизайн-систему не определяют.
+  - name: vercel-react-best-practices
+    mode: conditional
+    scope: frontend
+    source: vendor
+    required: false
+    sync: [.claude]
+    overlaps: [figma-to-front]
+    files: [SKILL.md]
+
+  - name: vercel-composition-patterns
+    mode: conditional
+    scope: frontend
+    source: vendor
+    required: false
+    sync: [.claude]
+    overlaps: [figma-to-front]
+    files: [SKILL.md]
+
+  - name: web-design-guidelines
+    mode: conditional
+    scope: frontend
+    source: vendor
+    required: false
+    sync: [.claude]
+    overlaps: [figma-to-front]
+    files: [SKILL.md]
+
+  # ── conditional: архитектура, AI, данные ────────────────────────────────────
+  - name: platform-architecture
+    mode: conditional
+    scope: architecture
+    source: template
+    required: false
+    sync: [.claude]
+    overlaps: [feature-pattern]
+    files: [SKILL.md]
+
+  - name: ai-layer-architecture
+    mode: conditional
+    scope: ai
+    source: template
+    required: false
+    sync: [.claude]
+    overlaps: [ai-evals-ops]
+    files: [SKILL.md]
+
+  - name: ai-evals-ops
+    mode: conditional
+    scope: ai
+    source: template
+    required: false
+    sync: [.claude]
+    overlaps: [ai-layer-architecture]
+    files: [SKILL.md]
+
+  - name: data-ingestion
+    mode: conditional
+    scope: ingestion
+    source: template
+    required: false
+    sync: [.claude]
+    overlaps: [outbound-messaging]
+    files: [SKILL.md]
+
+  - name: outbound-messaging
+    mode: conditional
+    scope: communications
+    source: template
+    required: false
+    sync: [.claude]
+    overlaps: [data-ingestion]
+    files: [SKILL.md]
+
+  # ── optional ────────────────────────────────────────────────────────────────
+  - name: ui-ux-pro-max
+    mode: optional
+    scope: frontend
+    source: vendor
+    required: false
+    sync: [.claude]
+    overlaps: [figma-to-front, web-design-guidelines]
+    files: [SKILL.md]
+    note: >-
+      Каталог общих UX-паттернов. НЕ должен определять палитру, компоненты или
+      визуальный стиль конкретного продукта — дизайн-система своя в каждом проекте.
+
+  - name: writing-guidelines
+    mode: optional
+    scope: docs
+    source: vendor
+    required: false
+    sync: [.claude]
+    overlaps: []
+    files: [SKILL.md]
+
+  # ── manual: только явный вызов ──────────────────────────────────────────────
+  - name: project-skill-architect
+    mode: manual
+    source: template
+    required: false
+    sync: [.claude]
+    overlaps: []
+    files: [SKILL.md, references, scripts]
+    note: Перестраивает портфель скиллов целиком — запускать осознанно.
+
+  - name: roadmap-execution
+    mode: manual
+    source: template
+    required: false
+    sync: [.claude]
+    overlaps: []
+    files: [SKILL.md]
+    note: Требует audit/ROADMAP.md и audit/CURRENT.md в репозитории.
+
+# Скиллы, которые сознательно НЕ входят в шаблон.
+# Список нужен, чтобы вопрос «а почему их нет» не всплывал заново.
+excluded:
+  - name: repo-scan
+    reason: >-
+      Сторонний пакет: ~1 МБ бинарников, python-скрипты, документация на китайском,
+      собственный .git внутри. Держать локально, в шаблон не тащить.
+  - name: deploy-to-vercel
+    reason: Шаблон деплоится в Docker, не в Vercel.
+  - name: vercel-cli-with-tokens
+    reason: То же.
+  - name: vercel-optimize
+    reason: То же.
+  - name: vercel-react-native-skills
+    reason: Мобильной части в шаблоне нет.
+  - name: vercel-react-view-transitions
+    reason: Узкая тема; подключается точечно, если понадобятся view transitions.
+  - name: design-system-delivery
+    reason: >-
+      Не создаём: дизайн-система своя под каждый продукт. Переносимы только
+      практики (figma-to-front, web-design-guidelines).
+  - name: architecture-invariants
+    reason: Инварианты живут в ADR и CLAUDE.md; отдельный скилл дублировал бы их.
+  - name: testing-and-verification
+    reason: Покрыто verification-loop и e2e-testing.
+  - name: saas-billing
+    reason: Нет реального skill-пакета; не выдумываем.

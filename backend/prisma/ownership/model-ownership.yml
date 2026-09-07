@@ -1,0 +1,34 @@
+canonicalSchema: prisma/schema.prisma
+
+# Реестр владения моделями. Prisma Client и миграции — общие на все сервисы,
+# поэтому «кто владеет моделью» фиксируется здесь, а не границами кода.
+# Правило: писать в модель может только сервис-владелец; остальные — через его API/gRPC.
+#
+# scope:
+#   platform — платформенные таблицы (workspaces, users, сессии, аудит)
+#   global   — общие для всех тенантов, БЕЗ workspace_id, БЕЗ RLS
+#   tenant   — тенант-скоупные, несут workspace_id, защищены RLS
+#
+# Инвариант шаблона: любая новая бизнес-модель попадает в `tenant`.
+# Модель без workspace_id — осознанное исключение, требует записи в ADR.
+
+scopes:
+  platform:
+    - Workspace
+    - User
+    - Session
+    - SystemEvent
+  global: []
+  tenant:
+    - Project
+    - Task
+
+ownership:
+  auth-service:
+    - Workspace
+    - User
+    - Session
+    - SystemEvent
+  example-service:
+    - Project
+    - Task

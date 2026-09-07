@@ -1,0 +1,46 @@
+{
+  "name": "__APP_SLUG__-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "node server.js",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
+    "@tanstack/react-virtual": "^3.13.24",
+    "axios": "^1.14.0",
+    "fuzzball": "^2.2.3",
+    "imask": "^7.6.1",
+    "lucide-react": "^1.7.0",
+    "next": "16.2.1",
+    "react": "19.2.4",
+    "react-colorful": "^5.6.1",
+    "react-dom": "19.2.4",
+    "react-hook-form": "^7.72.0",
+    "react-imask": "^7.6.1",
+    "timezones-list": "^3.1.0",
+    "zod": "^4.3.6",
+    "zustand": "^5.0.12"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/express": "^5.0.6",
+    "@types/http-proxy-middleware": "^0.19.3",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.1",
+    "eslint-config-prettier": "^10.1.8",
+    "express": "^5.2.1",
+    "http-proxy": "1.18.1",
+    "http-proxy-middleware": "^3.0.5",
+    "prettier": "^3.8.1",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

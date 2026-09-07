@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package shared.v1;
+
+message TenantContext {
+  string tenant_id = 1;
+  string schema_name = 2;
+}
+
+message Empty {}
+
+message HealthReply {
+  string service = 1;
+  string status = 2;
+  string timestamp = 3;
+}

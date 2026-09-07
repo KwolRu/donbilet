@@ -1,0 +1,71 @@
+# ─── Зависимости и сборка ─────────────────────────────────────────────────────
+node_modules/
+dist/
+build/
+.next/
+out/
+coverage/
+*.tsbuildinfo
+
+# ─── Секреты ──────────────────────────────────────────────────────────────────
+# Реальные .env не коммитим никогда. В репозитории живут только *.env.example.
+.env
+.env.local
+.env.*.local
+backend/.env
+backend/.env.local
+frontend/.env
+frontend/.env.local
+backend/infra/env/*.env
+!backend/infra/env/*.env.example
+
+# ─── Логи и артефакты прогонов ────────────────────────────────────────────────
+*.log
+npm-debug.log*
+.logs/
+playwright-report/
+test-results/
+
+# ─── Локальное окружение ──────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+vps/
+
+# ─── Агентские инструменты ────────────────────────────────────────────────────
+# Состав портфеля описан в .claude/skills-manifest.yaml и проверяется
+# `npm run skills:check`. Ниже — только то, что в репозиторий НЕ идёт.
+
+# Машинно-локальное: настройки конкретной машины и память сессий.
+.claude/settings.local.json
+.claude/agent-memory/
+.codex/settings.local.json
+.gemini/settings.local.json
+
+# Скиллы из раздела `excluded` манифеста. Могут лежать локально и работать,
+# но частью шаблона не являются — причина отказа указана в манифесте.
+.claude/skills/repo-scan/
+.claude/skills/deploy-to-vercel/
+.claude/skills/vercel-cli-with-tokens/
+.claude/skills/vercel-optimize/
+.claude/skills/vercel-react-native-skills/
+.claude/skills/vercel-react-view-transitions/
+.claude/skills/ecc/
+.claude/repo-scan/
+
+# В .codex и .gemini едут только копии скиллов, которые раскладывает
+# `npm run skills:sync` (сейчас это feature-pattern и figma-to-front).
+# Остальное там — личное окружение.
+.codex/*
+!.codex/skills/
+.codex/skills/*
+!.codex/skills/feature-pattern/
+!.codex/skills/figma-to-front/
+
+.gemini/*
+!.gemini/skills/
+.gemini/skills/*
+!.gemini/skills/feature-pattern/
+!.gemini/skills/figma-to-front/

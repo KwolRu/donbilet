@@ -1,0 +1,58 @@
+# BuildKit читает этот файл при сборке с флагом -f frontend/Dockerfile.
+# Контекст сборки — корень репозитория, поэтому паттерны должны покрывать всё дерево.
+
+# Зависимости и артефакты сборки (везде)
+**/node_modules
+**/dist
+**/.next
+**/out
+**/coverage
+**/.turbo
+
+# Контроль версий / CI
+.git
+.gitignore
+.github
+
+# Редактор / IDE
+.vscode
+.idea
+*.swp
+
+# Логи
+**/*.log
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+
+# Локальные .env / секреты
+**/.env
+**/.env.*
+.env*.local
+!**/.env.example
+
+# Локальный Docker / инфра
+docker-compose*.yml
+deploy
+
+# Backend (кроме shared protos/types, которые нужны фронту).
+# Добавили сервис — добавьте его сюда, иначе он попадёт в контекст сборки фронта.
+backend/microservices/auth-service
+backend/microservices/example-service
+backend/microservices/billing-service
+backend/microservices/analytics-service
+backend/microservices/gateway
+backend/microservices/notification-service
+backend/prisma
+backend/scripts
+backend/test
+backend/infra
+backend/docs
+
+# Документация
+**/README.md
+frontend/docs
+
+# Системный мусор ОС
+.DS_Store
+Thumbs.db

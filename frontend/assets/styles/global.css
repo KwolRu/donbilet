@@ -1,0 +1,535 @@
+@import "tailwindcss";
+
+:root {
+  --bg-state-base-warning: #fcf4ec;
+  --bg-state-base-warning-inverse: #eb4a00;
+  --text-warning: #ff5900;
+  --Icon-state-warning: #ff5900;
+  --bg-label-soft_02: #e8f5e9;
+  --text-success: #2e7d32;
+
+  --bg-surface-base-primary-20: rgba(38, 36, 46, 0.2);
+  --bg-surface-base-primary-30: rgba(38, 36, 46, 0.3);
+}
+
+@theme {
+  --breakpoint-mobile: 390px;
+  --breakpoint-tablet: 768px;
+  --breakpoint-laptop: 1024px;
+  --breakpoint-desktop: 1440px;
+  --breakpoint-desktopL: 1920px;
+
+  --color-indigo-700: #4338ca;
+  --color-primary: #5e46fb;
+  --color-primary-hover: #480fdb;
+  --color-secondary: #26242e;
+  --color-secondary-hover: #0f0f14;
+  --color-tint: #eeeef0;
+  --color-tint-foreground: #afaeba;
+  --color-dark-grey: #595669;
+  --color-tertiary: #cecdd4;
+  --color-error: #e6282d;
+  --color-linear: #dfe2ea;
+  --color-linear-hover: #7a61ff;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #e7eafe;
+  --color-surface-tertiary: #f5f5fa;
+
+  --color-border-subtle: #eeeef0;
+  --color-border-default: #cecdd4;
+  --color-bg-button-primary-disabled: #eeeef0;
+  --color-text-button-primary-disabled: #afaeba;
+  --color-bg-state-base-error: #fff1f1;
+  --color-text-error: #e6282d;
+  --color-text-info: #ff5900;
+
+  --color-bg-slate-base-info: #fcf4ec;
+
+  --color-text-primary: #26242e;
+  --color-text-secondary: #6c6a78;
+  --color-text-tertiary: #afaeba;
+  --color-text-disabled: #afaeba;
+  --color-text-icon-disabled: #afaeba;
+  /** Алиас для утилиты `text-icon-disabled` (Lucide берёт stroke из currentColor). */
+  --color-icon-disabled: #afaeba;
+
+  --color-icon-primary: #26242e;
+
+  --color-bg-surface-base-default: #ffffff;
+  --color-bg-surface-base-tertiary: #f5f5fa;
+  --color-bg-surface-base-error: #ff5b7a;
+  --color-bg-surface-base-disabled: #eeeef0;
+  --color-bg-surface-base-layout: #f5f5f9;
+
+  --color-text-button-primary-normal: #ffffff;
+  --color-text-button-ghost-disabled: #afaeba;
+  --color-bg-button-primary-normal: #6349ff;
+  --color-bg-button-ghost-disabled: transparent;
+
+  --color-icon-primary: #26242e;
+  --color-icon-button-primary-normal: #ffffff;
+  --color-icon-button-ghost-disabled: #afaeba;
+  --color-icon-button-ghost-normal: #595669;
+  --color-icon-button-linear-normal: #595669;
+
+  --color-bg-button-linear-normal: transparent;
+  --color-border-button-linear-normal: #6349ff;
+  --color-text-button-linear-normal: #595669;
+  --color-text-button-linear-hover: #480fdb;
+  --color-surface-base-success: #189d57;
+
+  --color-bg-surface-base-inverse: #26242e;
+  --color-text-inverse: #ffffff;
+
+  --border-default: #cecdd4;
+  --border-subtle: #eeeef0;
+  --border-hover: #480fdb;
+
+  --color-text-link-hover: #480fdb;
+  --color-text-link: #5e46fb;
+  --color-Icon-accent: #3a2590;
+  /* ─── Elevated ─── */
+  --color-bg-surface-base-elevated: #e7eafe;
+
+  /* ─── Base ─── */
+  --color-bg-surface-base-base: #5e46fb;
+  --color-bg-surface-base-hover: #480fdb;
+  --color-bg-label-soft_01: #e7eafe;
+  --color-bg-surface-base-primary: #26242e;
+  --color-bg-state-base-warning: #fef8e1;
+  --color-bg-state-base-info: #e5f2ff;
+  --color-text-warning: #ff5b00;
+  --color-text-info: #0682fe;
+  --color-bg-status-graduated: #0070e0;
+  --color-bg-status-dropped: #e6282d;
+
+  /* ─── Icon ─── */
+  --color-icon-secondary: #595669;
+  --color-icon-hover: #480fdb;
+
+  /* ─── Button Secondary ─── */
+  --color-bg-button-secondary-normal: #26242e;
+  --color-text-button-secondary-normal: #ffffff;
+  --color-icon-button-secondary-normal: #ffffff;
+  --color-surface-base-tertiary: #f5f5f9;
+  --color-surface-base-disabled: #eeeef0;
+  --color-bg-surface-base-secondary: #595669;
+  --color-text-success-inverse: #064b26;
+  --color-bg-state-base-success: #d7feea;
+  --color-Icon-state-success: #189d57;
+  --color-bg-state-base-success-inverse: #189d57;
+  --color-bg-state-base-info-inverse: #0070e0;
+  --color-bg-state-base-warning-inverse: #eb4a00;
+  --color-bg-state-base-error-inverse: #d12026;
+  --color-bg-surface-base-inverse: #0f0f14;
+  --color-bg-label-strong_10: #ff5900;
+  --color-bg-surface-base-success: #189d57;
+  --text-error: #e6282d;
+
+  /* ─── Label colors (Figma): пары soft/strong для палитры текста ─── */
+  --color-bg-label-strong_01: #5e46fb;
+  --color-bg-label-soft_02: #d7feea;
+  --color-bg-label-strong_02: #189d57;
+  --color-bg-label-soft_03: #ffe7f0;
+  --color-bg-label-strong_03: #b72f74;
+  --color-bg-label-soft_04: #fef8e1;
+  --color-bg-label-strong_04: #f8ce0a;
+  --color-bg-label-soft_05: #c5fcf0;
+  --color-bg-label-strong_05: #1db6a2;
+  --color-bg-label-soft_06: #fff1f1;
+  --color-bg-label-strong_06: #e6282d;
+  --color-bg-label-soft_07: #e5f2ff;
+  --color-bg-label-strong_07: #0682fe;
+  --color-bg-label-soft_08: #e5f2ff;
+  --color-bg-label-strong_08: #50a5ff;
+  --color-bg-label-soft_09: #eeeef0;
+  --color-bg-label-strong_09: #26242e;
+  --color-bg-label-soft_10: #fcf4ec;
+  --color-bg-label-transparent_06: rgba(230, 40, 45, 0.08);
+
+  /* ─── Surface accent fills (донат/категории «Дисковое пространство») ─── */
+  --color-bg-surface-base-warning: #f8ce0a;
+  --color-bg-surface-base-info: #0682fe;
+
+  /* ─── Button linear disabled / secondary hover (тулбар текста) ─── */
+  --color-bg-button-linear-disabled: transparent;
+  --color-border-button-linear-disabled: #eeeef0;
+  --color-text-button-linear-disabled: #afaeba;
+  --color-bg-button-secondary-hover: #0f0f14;
+  --color-text-button-secondary-hover: #ffffff;
+
+  --color-outline-border-subtle: #eeeef0;
+  --color-outline-Icon-primary: #5e46fb;
+  --color-outline-Icon-secondary: #595669;
+  --color-outline-Icon-accent: #3a2590;
+  --color-outline-Icon-button-ghost-normal: #595669;
+
+  --color-text-success: #189d57;
+}
+
+@layer base {
+  
+  html,
+  body {
+    overflow-x: hidden;
+  }
+  body {
+    font-family: var(--font-inter), sans-serif;
+  }
+
+  a,
+  button:not(:disabled),
+  [role="button"]:not(:disabled),
+  [role="checkbox"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover,
+  textarea:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px var(--color-autofill-bg, #fefce8) inset !important;
+    -webkit-text-fill-color: inherit !important;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+}
+
+@utility custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-surface-tertiary) transparent;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-surface-tertiary);
+    border-radius: 9999px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+/** Скроллбар поверх контента — ширина колонок не сжимается при появлении полосы. */
+@utility custom-scrollbar-overlay {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-surface-tertiary) transparent;
+  margin-right: -4px;
+  padding-right: 4px;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-surface-tertiary);
+    border-radius: 9999px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+@utility hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+  }
+}
+
+@utility text-h1 {
+  font-size: 24px;
+  line-height: 1.15;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+
+@utility text-h2 {
+  font-size: 20px;
+  line-height: 1.15;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+
+@utility text-h3 {
+  font-size: 16px;
+  line-height: 1.1;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+
+@utility text-h4 {
+  font-size: 14px;
+  line-height: 1.11;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+
+@utility text-button-lg {
+  font-size: 20px;
+  line-height: 1.2;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+
+@utility text-button-sm {
+  font-size: 14px;
+  line-height: 1.71;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+
+@utility text-caption-lg {
+  font-size: 14px;
+  line-height: 0.83;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+
+@utility text-caption-sm {
+  font-size: 12px;
+  line-height: 1.04;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+
+@utility text-body-regular {
+  font-size: 14px;
+  line-height: 1.17;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+
+@utility text-body-medium {
+  font-size: 14px;
+  line-height: 1.17;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+
+@utility text-input-lg {
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+
+@utility text-input-sm {
+  font-size: 14px;
+  line-height: 1.16;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+
+@utility text-note {
+  font-size: 16px;
+  line-height: 1.47;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+
+@utility text-note-small {
+  font-size: 14px;
+  line-height: 1.4;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+
+@utility text-breadcrumb {
+  font-size: 14px;
+  line-height: 1.11;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+
+@utility text-heading-h1 {
+  font-size: 24px;
+  line-height: 1.15;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+
+@utility text-heading-h2 {
+  font-size: 20px;
+  line-height: 1.18;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+
+@utility text-heading-h3 {
+  font-size: 16px;
+  line-height: 1.22;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+
+@utility font-inter {
+  font-family: var(--font-inter), sans-serif;
+}
+
+@utility squircle {
+  corner-shape: squircle;
+}
+
+@utility shadow-card {
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.08);
+}
+
+@utility shadow-popover {
+  box-shadow: 0 11px 20px 0 rgba(51, 47, 83, 0.12);
+}
+
+@utility overlay-scrim {
+  background-color: rgb(0 0 0 / 0.4);
+}
+
+@utility overlay-scrim-soft {
+  background-color: rgb(0 0 0 / 0.3);
+}
+
+.skeleton-shimmer {
+  background-color: #ddd;
+  background-image: linear-gradient(90deg, #ddd 0%, #e8e8e8 50%, #ddd 100%);
+  background-size: 200% 100%;
+  background-position: -200% 0;
+  background-repeat: no-repeat;
+  animation: skeleton-shimmer-animation 1.6s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer-animation {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Анимация блика на превью кнопки лид-источника (онбординг, шаг 4). */
+@keyframes originGlareSweep {
+  0% {
+    transform: translateX(-120%) skewX(-12deg);
+  }
+  55%,
+  100% {
+    transform: translateX(260%) skewX(-12deg);
+  }
+}
+
+/* ─── LMS текстовый блок (TipTap) ───────────────────────────────────────────
+   Скоуп через .lms-text-block, чтобы не задеть возможные другие ProseMirror. */
+.lms-text-block .ProseMirror {
+  outline: none;
+  padding: 8px 0; /* как py-2 у прежнего textarea */
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--color-text-primary);
+}
+
+.lms-text-block .ProseMirror h1 {
+  font-size: 32px;
+  line-height: 40px;
+  font-weight: 500;
+}
+.lms-text-block .ProseMirror h2 {
+  font-size: 28px;
+  line-height: 36px;
+  font-weight: 500;
+}
+.lms-text-block .ProseMirror h3 {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 500;
+}
+.lms-text-block .ProseMirror h4 {
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 500;
+}
+.lms-text-block .ProseMirror h5 {
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 500;
+}
+.lms-text-block .ProseMirror h6 {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+}
+
+.lms-text-block .ProseMirror ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+}
+.lms-text-block .ProseMirror ol {
+  list-style: decimal;
+  padding-left: 1.5rem;
+}
+
+.lms-text-block .ProseMirror code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.875em;
+  background: var(--color-bg-surface-base-tertiary);
+  border-radius: 4px;
+  padding: 1px 4px;
+}
+
+.lms-text-block .ProseMirror a {
+  color: var(--color-text-link);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.lms-text-block .ProseMirror sub {
+  vertical-align: sub;
+  font-size: smaller;
+  color: currentColor;
+}
+.lms-text-block .ProseMirror sup {
+  vertical-align: super;
+  font-size: smaller;
+  color: currentColor;
+}
+
+/* Placeholder (extension Placeholder добавляет data-placeholder) */
+.lms-text-block .ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: var(--color-text-disabled);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Кастомное выделение по макету: фиолетовый фон, белый текст */
+.lms-text-block .ProseMirror ::selection {
+  background: var(--bg-button-primary-normal, #5e46fb);
+  color: #fff;
+}
+.lms-text-block .ProseMirror::selection {
+  background: var(--bg-button-primary-normal, #5e46fb);
+  color: #fff;
+}

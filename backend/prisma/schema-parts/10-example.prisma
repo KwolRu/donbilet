@@ -1,0 +1,60 @@
+// ==================== EXAMPLE DOMAIN: projects + tasks ====================
+// ЭТАЛОННЫЙ доменный part-файл. Показывает обязательные правила шаблона:
+//
+//   1. Каждая бизнес-таблица несёт `workspace_id` — иначе tenant-изоляция не работает.
+//   2. Каждая таблица несёт `created_at` / `updated_at`.
+//   3. Составной индекс `workspace_id` + (`status` | `created_at`) — под типовые
+//      выборки «список сущностей тенанта, отсортированный/отфильтрованный».
+//   4. Связь между доменными сущностями — с `onDelete: Cascade` внутри одного тенанта.
+//   5. `@@map` на snake_case-имя таблицы, поля — `@map("snake_case")`.
+//
+// Удалите этот файл и `example-service`, когда появится настоящий домен, либо
+// скопируйте его как заготовку: 20-<domain>.prisma, 30-<domain>.prisma, ...
+
+enum ProjectStatus {
+  active
+  archived
+}
+
+model Project {
+  id          String        @id @default(uuid())
+  workspaceId String        @map("workspace_id")
+  workspace   Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  status      ProjectStatus @default(active)
+
+  tasks Task[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([workspaceId, status])
+  @@index([workspaceId, createdAt])
+  @@map("projects")
+}
+
+enum TaskStatus {
+  todo
+  in_progress
+  done
+}
+
+model Task {
+  id          String     @id @default(uuid())
+  workspaceId String     @map("workspace_id")
+  workspace   Workspace  @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  projectId   String     @map("project_id")
+  project     Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  title       String
+  status      TaskStatus @default(todo)
+  dueAt       DateTime?  @map("due_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([workspaceId, status])
+  @@index([workspaceId, createdAt])
+  @@index([projectId, status])
+  @@map("tasks")
+}

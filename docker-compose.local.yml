@@ -1,0 +1,77 @@
+# Локальная инфраструктура. В контейнерах живёт ТОЛЬКО она:
+#
+#   nginx      — единая точка входа, same-origin для фронта и API
+#   postgres   — БД
+#   redis      — очереди BullMQ, кэш, rate limiting
+#
+# Сами сервисы и фронтенд запускаются с хоста, а не в Docker:
+#
+#   cd backend  && bun run local:up   # инфра + миграции + все сервисы в watch-режиме
+#   cd frontend && bun run dev        # Next.js на :3000
+#
+# Так правки подхватываются мгновенно, без пересборки образов. Контейнерный
+# запуск всего стека нужен только для прода — docker-compose.prod.yml.
+#
+# Открывать: http://localhost:${NGINX_HTTP_PORT:-8080}
+
+services:
+  postgres:
+    # pg_trgm и btree_gist входят в стандартный contrib — кастомный образ не нужен.
+    # Нужны PostGIS/pgvector? Соберите свой образ и укажите его здесь (ADR-0004).
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-root}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-123456}
+      POSTGRES_DB: ${POSTGRES_DB:-__APP_SLUG__}
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-root} -d ${POSTGRES_DB:-__APP_SLUG__}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-devpass}
+    command: >
+      sh -c "redis-server --appendonly yes --save 60 1000 --requirepass $$REDIS_PASSWORD"
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli --no-auth-warning -a $$REDIS_PASSWORD ping | grep -q PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  nginx:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    ports:
+      - "${NGINX_HTTP_PORT:-8080}:80"
+    volumes:
+      - ./deploy/nginx/app.local.conf:/etc/nginx/conf.d/default.conf:ro
+    # nginx проксирует на процессы ХОСТА (фронт :3000, gateway :5000).
+    # На Linux host.docker.internal не резолвится сам — добавляем явно.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  postgres_data:
+  redis_data:

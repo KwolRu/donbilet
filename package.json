@@ -1,0 +1,20 @@
+{
+  "name": "__APP_SLUG__",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Монорепа: NestJS-микросервисы + Next.js. Развёртывается из шаблона через npm run init:project.",
+  "scripts": {
+    "init:project": "node ./scripts/init-project.mjs",
+    "init:project:dry": "node ./scripts/init-project.mjs --dry-run",
+    "infra:up": "docker compose -f docker-compose.local.yml up -d",
+    "infra:down": "docker compose -f docker-compose.local.yml down",
+    "infra:logs": "docker compose -f docker-compose.local.yml logs -f",
+    "smoke": "node ./scripts/smoke-test.mjs",
+    "skills:check": "node ./scripts/check-skills.mjs",
+    "skills:sync": "node ./scripts/sync-skills.mjs"
+  },
+  "dependencies": {
+    "@aws-sdk/lib-storage": "^3.1046.0",
+    "dotenv": "^17.4.2"
+  }
+}
