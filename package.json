@@ -1,5 +1,5 @@
 {
-  "name": "__APP_SLUG__",
+  "name": "donbilet",
   "version": "0.1.0",
   "private": true,
   "description": "Монорепа: NestJS-микросервисы + Next.js. Развёртывается из шаблона через npm run init:project.",

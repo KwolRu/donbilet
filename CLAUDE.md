@@ -4,12 +4,22 @@
 
 ## Что это
 
-Шаблон многотенантного SaaS: NestJS-микросервисы + Next.js. Один стек обслуживает
-всех тенантов; изоляция — на уровне приложения через `workspace_id` в БД и claim
-`workspace_id` в JWT. Канон архитектуры — `backend/docs/adr/ADR-0001..0004`.
+**DonBilet** — платформа продажи автобусных билетов. Развёрнута из шаблона
+`arch-saas`: NestJS-микросервисы + Next.js.
 
-Если в репозитории ещё встречаются `__APP_NAME__` / `__APP_SLUG__` / `__APP_DOMAIN__` —
-шаблон не развёрнут: сначала `npm run init:project` в корне.
+Планирование и объём работ:
+
+- `docs/plan-tz/tz.md` — ТЗ (Приложение № 1 к Договору №4063), 26 пунктов
+- `docs/plan-tz/DonBilet — технологический стек и целевая архитектура.md` — целевая архитектура
+- `docs/plan-tz/roadmap.md` — 18 фаз в двух треках, оценки, матрица покрытия ТЗ
+- `docs/01`–`docs/08` — аудит legacy-системы (iDempiere + Angular 8)
+- `audit/ROADMAP.md`, `audit/CURRENT.md` — утверждённый scope и фактическое состояние
+
+Канон архитектуры — `backend/docs/adr/ADR-0001..0006`.
+
+**Важно про tenancy.** Шаблон рассчитан на многотенантный SaaS, DonBilet — B2C
+с одним владельцем. Расхождение и предлагаемое решение (три скоупа: `global`,
+`workspace`, `customer`) — в `ADR-0006`. Решение требует утверждения до Ф5.
 
 ## Архитектура (high-level)
 
@@ -21,9 +31,9 @@ Prisma-схемой. Один Docker-образ на все сервисы, пр
 
 | Сервис | Порт | Роль |
 |---|---|---|
-| `gateway` | 5000 | Единственная точка входа. CORS, JWT, проксирование по `modules/proxy/proxy.routes.ts` |
-| `auth-service` | 5007 | Регистрация/вход/refresh/сессии. Владеет Workspace, User, Session |
-| `example-service` | 5001 | Эталонный домен (projects 1—N tasks). Swagger `/api/docs` |
+| `gateway` | 5200 | Единственная точка входа. CORS, JWT, проксирование по `modules/proxy/proxy.routes.ts` |
+| `auth-service` | 5207 | Регистрация/вход/refresh/сессии. Владеет Workspace, User, Session |
+| `example-service` | 5201 | Эталонный домен (projects 1—N tasks). Swagger `/api/docs` |
 | `notification-service` | — | Скелет: очередь BullMQ → email/SMS |
 | `billing-service`, `analytics-service` | — | Скелеты |
 | `shared` | — | Не сервис: общий код (auth, prisma, s3, crypto, proto, фильтры) |
@@ -75,8 +85,30 @@ Prisma-схемой. Один Docker-образ на все сервисы, пр
 
 ### Edge
 
-`deploy/nginx/app.conf` подключается через compose: `/` → frontend, `/api` → gateway,
-same-origin. Прямой порт gateway для отладки — `GATEWAY_PORT` (обычно 5100).
+Edge — **Traefik**, не nginx (§7 целевой архитектуры): автообнаружение контейнеров,
+HTTPS с Let's Encrypt, прозрачный WebSocket.
+
+- Локально: file-провайдер `deploy/traefik/dynamic/local.yml` проксирует на процессы
+  хоста (`/api` → :5200, `/` → :3000). Дашборд — `http://localhost:8081`.
+- Прод: Docker-провайдер, маршруты объявляют сами контейнеры через labels в
+  `docker-compose.prod.yml`. Отдельный конфиг реверс-прокси не правится.
+- Обе схемы дают same-origin, поэтому httpOnly-cookies сессии работают одинаково.
+
+Прямой порт gateway для отладки — `GATEWAY_PORT` (5200). Диапазон 52xx выбран,
+чтобы не конфликтовать с другими проектами на той же машине: 5000/5001/5006–5011
+занимает соседний стек. Если поднять DonBilet на 5000, чужой gateway перехватит
+порт, `/api/health` будет отвечать 200 — и стек «работает», пока не упрётся в 404
+на доменных маршрутах.
+
+**После правки `deploy/traefik/dynamic/*.yml` перезапустите Traefik:**
+
+```bash
+docker compose -f docker-compose.local.yml restart traefik
+```
+
+`watch: true` в конфиге есть, но на Windows bind-mount не передаёт inotify-события,
+и Traefik продолжит работать со старой маршрутизацией. Проверить, куда он реально
+проксирует: `curl http://localhost:8081/api/http/services`.
 
 ## Часто используемые команды
 
@@ -84,7 +116,7 @@ Backend-команды — из `backend/`, frontend-команды — из `fr
 
 ### Локальный запуск
 
-**В Docker — только инфраструктура** (nginx, postgres, redis). Сервисы и
+**В Docker — только инфраструктура** (traefik, postgres, redis). Сервисы и
 фронтенд запускаются процессами на хосте: правки подхватываются без пересборки
 образов. Контейнерный запуск всего — только прод (`docker-compose.prod.yml`).
 
@@ -99,16 +131,16 @@ cd frontend
 bun run dev                      # Next.js на :3000
 ```
 
-Точка входа приложения — nginx: `http://localhost:8080` (same-origin для cookies).
+Точка входа приложения — Traefik: `http://localhost:8080` (same-origin для cookies).
 Только инфраструктура, без сервисов: `npm run infra:up` из корня.
 
 ### Отдельный сервис
 
 ```bash
 cd backend
-bun run start:gateway            # 5000
-bun run start:auth               # 5007
-bun run start:example            # 5001
+bun run start:gateway            # 5200
+bun run start:auth               # 5207
+bun run start:example            # 5201
 bun run start:example:watch      # с hot-reload через nodemon
 ```
 

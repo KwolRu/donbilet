@@ -4,8 +4,8 @@ import { fileURLToPath } from "node:url";
 
 const projectRoot = dirname(fileURLToPath(import.meta.url));
 
-/** Адрес gateway для dev-режима. В проде /api проксирует nginx. */
-const gatewayUrl = process.env.GATEWAY_PROXY_URL || "http://localhost:5000";
+/** Адрес gateway для dev-режима. В проде /api проксирует Traefik. */
+const gatewayUrl = process.env.GATEWAY_PROXY_URL || "http://localhost:5200";
 
 const nextConfig: NextConfig = {
   // standalone — минимальный рантайм для docker-образа (frontend/Dockerfile).
@@ -16,7 +16,7 @@ const nextConfig: NextConfig = {
     root: projectRoot,
   },
   // Локальные хосты, с которых разрешён dev-доступ (кроме localhost).
-  allowedDevOrigins: ["__APP_DOMAIN__"],
+  allowedDevOrigins: ["donbilet.ru"],
   images: {
     // Внешние источники картинок. S3-хост проекта добавьте сюда,
     // иначе next/image отдаст 400 на аватарах и вложениях.

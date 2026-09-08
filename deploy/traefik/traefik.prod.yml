@@ -1,0 +1,56 @@
+# Traefik — статическая конфигурация для ПРОДА.
+#
+# Маршруты не описываются здесь: их объявляют сами контейнеры через Docker labels
+# в docker-compose.prod.yml. Это и есть причина выбора Traefik (§7 архитектуры) —
+# добавление сервиса не требует правки конфига реверс-прокси.
+#
+# Снаружи открыты только :80 и :443 (§43). PostgreSQL, Redis, Temporal и
+# NestJS-сервисы портов наружу не публикуют.
+
+api:
+  dashboard: true
+  # Дашборд доступен только через роутер с аутентификацией — см. compose.
+  insecure: false
+
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+          permanent: true
+
+  websecure:
+    address: ":443"
+    http:
+      tls:
+        certResolver: letsencrypt
+    transport:
+      respondingTimeouts:
+        readTimeout: 300s
+        writeTimeout: 300s
+        idleTimeout: 300s
+
+providers:
+  docker:
+    # Контейнер попадает в маршрутизацию только с явным label
+    # `traefik.enable=true` — случайно наружу ничего не вылезет.
+    exposedByDefault: false
+    network: app-network
+
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: "${ACME_EMAIL}"
+      storage: /letsencrypt/acme.json
+      httpChallenge:
+        entryPoint: web
+
+log:
+  level: WARN
+
+accessLog:
+  filters:
+    statusCodes: ["400-599"]

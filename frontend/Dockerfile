@@ -23,8 +23,8 @@ COPY backend/microservices/shared /app/backend/microservices/shared
 # NEXT_PUBLIC_* вшиваются в клиентский бандл на этапе сборки — менять их
 # переменными окружения контейнера уже поздно, только пересборкой образа.
 ARG NEXT_PUBLIC_API_URL=
-ARG NEXT_PUBLIC_MAIN_DOMAIN=__APP_DOMAIN__
-ARG NEXT_PUBLIC_APP_NAME=__APP_NAME__
+ARG NEXT_PUBLIC_MAIN_DOMAIN=donbilet.ru
+ARG NEXT_PUBLIC_APP_NAME=DonBilet
 
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 ENV NEXT_PUBLIC_MAIN_DOMAIN=${NEXT_PUBLIC_MAIN_DOMAIN}

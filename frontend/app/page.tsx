@@ -12,7 +12,7 @@ export default function HomePage() {
   return (
     <main className="flex flex-1 items-center justify-center p-6">
       <div className="flex w-full max-w-[640px] flex-col gap-4 text-center">
-        <h1 className="text-h1 text-text-primary">__APP_NAME__</h1>
+        <h1 className="text-h1 text-text-primary">DonBilet</h1>
         <p className="text-body-regular text-text-secondary">
           Шаблон развёрнут. Дальше: <code>npm run init:project</code> в корне репозитория,
           затем поднимите стек по README и начните первую фичу через скилл{" "}

@@ -1,7 +1,7 @@
 /**
  * База URL публичного API для браузера и SSR.
  * - Если задан NEXT_PUBLIC_API_URL — всегда он (прямой вызов gateway с хоста).
- * - Иначе в браузере — same-origin (nginx на том же host:port проксирует /api → gateway школы).
+ * - Иначе в браузере — same-origin (Traefik на том же host:port проксирует /api → gateway).
  * - Иначе на сервере Next — INTERNAL_API_URL (docker-сеть) или fallback localhost.
  */
 export function getPublicApiBaseUrl(): string {
@@ -24,5 +24,5 @@ export function getPublicApiBaseUrl(): string {
   const internal = process.env.INTERNAL_API_URL?.trim();
   if (internal) return internal;
 
-  return "http://localhost:5000";
+  return "http://localhost:5200";
 }

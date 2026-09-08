@@ -20,7 +20,7 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
  * Креды и endpoint берутся из backend/.env. Origins можно задать через
  * env-переменную S3_CORS_ALLOWED_ORIGINS (через запятую) — иначе разрешаем
  * "*". Для проверки конкретной школы укажи S3_CORS_PROBE_ORIGIN, например:
- *   S3_CORS_PROBE_ORIGIN=https://__APP_DOMAIN__ npm run s3:cors
+ *   S3_CORS_PROBE_ORIGIN=https://donbilet.ru npm run s3:cors
  */
 
 function getEnvOrThrow(name: string): string {

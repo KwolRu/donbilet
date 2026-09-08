@@ -154,7 +154,7 @@ export class EmailService {
 
   private async sendEmail(options: MailOptions): Promise<void> {
     const mailOptions = {
-      from: `${this.configService.get('MAIL_FROM_NAME', '__APP_NAME__')} <${this.configService.get('MAIL_FROM', 'noreply@__APP_DOMAIN__')}>`,
+      from: `${this.configService.get('MAIL_FROM_NAME', 'DonBilet')} <${this.configService.get('MAIL_FROM', 'noreply@donbilet.ru')}>`,
       ...options,
     };
 

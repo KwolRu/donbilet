@@ -1,0 +1,37 @@
+# Traefik — статическая конфигурация для ЛОКАЛЬНОЙ разработки.
+#
+# Почему Traefik, а не nginx: целевая архитектура §7 — автообнаружение контейнеров
+# через Docker labels, HTTPS с Let's Encrypt из коробки, прозрачный WebSocket
+# (понадобится в Ф7 для чата поддержки), минимум ручной конфигурации.
+#
+# Локально фронт и gateway — процессы на ХОСТЕ, а не контейнеры, поэтому Docker-
+# провайдер их не увидит. Используется file-провайдер: deploy/traefik/dynamic/.
+# В проде наоборот — Docker-провайдер и labels на сервисах.
+
+api:
+  # Дашборд на отдельном порту :8081. insecure допустим только локально.
+  dashboard: true
+  insecure: true
+
+entryPoints:
+  web:
+    address: ":80"
+    transport:
+      respondingTimeouts:
+        # Долгие ответы: legacy `/reserve/result` держит соединение до 40 с
+        # (docs/03, риск R1). Пока фасад legacy жив, таймаут должен это переживать.
+        readTimeout: 300s
+        writeTimeout: 300s
+        idleTimeout: 300s
+  traefik:
+    address: ":8080"
+
+providers:
+  file:
+    directory: /etc/traefik/dynamic
+    watch: true
+
+log:
+  level: INFO
+
+accessLog: {}

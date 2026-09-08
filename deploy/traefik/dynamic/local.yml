@@ -1,0 +1,43 @@
+# Traefik — динамическая конфигурация для ЛОКАЛЬНОЙ разработки.
+#
+# Маршрутизация повторяет прод (§7 целевой архитектуры), но цели — процессы на
+# хосте, а не контейнеры:
+#
+#   /api/*  → host:5200  gateway   (cd backend  && bun run local:up)
+#   /*      → host:3000  frontend  (cd frontend && bun run dev)
+#
+# Зачем прокси локально: тот же single-origin, что и в проде. Фронт и API на
+# одном host:port — httpOnly-cookies сессии работают идентично боевым, и
+# `sameSite`/`secure` не приходится ослаблять ради разработки.
+#
+# WebSocket отдельной настройки не требует: Traefik апгрейдит соединение
+# прозрачно. Это касается и HMR-сокета Next.js, и будущего чата поддержки (Ф7).
+
+http:
+  routers:
+    # /api выигрывает у / за счёт явного приоритета: полагаться на длину правила
+    # не стоит, порядок должен быть виден в конфиге.
+    api:
+      rule: "PathPrefix(`/api`)"
+      priority: 100
+      entryPoints: [web]
+      service: gateway
+
+    frontend:
+      rule: "PathPrefix(`/`)"
+      priority: 1
+      entryPoints: [web]
+      service: frontend
+
+  services:
+    gateway:
+      loadBalancer:
+        servers:
+          - url: "http://host.docker.internal:5200"
+        passHostHeader: true
+
+    frontend:
+      loadBalancer:
+        servers:
+          - url: "http://host.docker.internal:3000"
+        passHostHeader: true

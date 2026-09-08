@@ -1,4 +1,4 @@
-# __APP_NAME__
+# DonBilet
 
 Шаблон многотенантного SaaS: **NestJS-микросервисы + Next.js 16**.
 Один стек на всех тенантов, изоляция через `workspace_id`.
@@ -6,12 +6,12 @@
 ```
 backend/          NestJS: gateway, auth, example-service, скелеты сервисов, shared
 frontend/         Next.js 16 App Router, React 19, Tailwind v4, Zustand, zod
-deploy/nginx/     Edge: / → frontend, /api → gateway (same-origin)
+deploy/traefik/   Edge: / → frontend, /api → gateway (same-origin), HTTPS в проде
 scripts/          init-project.mjs, smoke-test.mjs
 .claude/skills/   Скиллы агента: feature-pattern, figma-to-front
 ```
 
-**Модель запуска.** Локально в Docker только инфраструктура (nginx, postgres,
+**Модель запуска.** Локально в Docker только инфраструктура (traefik, postgres,
 redis) — сервисы и фронтенд работают процессами на хосте с hot-reload. В проде
 в контейнерах уже всё (`docker-compose.prod.yml`).
 
@@ -22,7 +22,7 @@ redis) — сервисы и фронтенд работают процесса�
 > Этот раздел удаляется после первого запуска.
 
 **1. Подставить имя проекта.** В репозитории расставлены плейсхолдеры
-`__APP_NAME__`, `__APP_SLUG__`, `__APP_DOMAIN__`:
+`DonBilet`, `donbilet`, `donbilet.ru`:
 
 ```bash
 npm run init:project
@@ -49,7 +49,7 @@ openssl rand -hex 32              # → CRYPTO_KEY в backend/.env и .env
 
 **3. Поднять окружение.**
 
-В Docker живёт только инфраструктура — nginx, postgres, redis. Сервисы и
+В Docker живёт только инфраструктура — traefik, postgres, redis. Сервисы и
 фронтенд запускаются с хоста, чтобы правки подхватывались без пересборки образов.
 
 ```bash

@@ -12,7 +12,7 @@ import { applyBrowserServerErrorPolicy } from "../../../lib/routing/server-error
  * `withCredentials: true` — httpOnly-cookies с access/refresh делают всё остальное.
  *
  * Что здесь решено раз и навсегда, чтобы не переписывать в каждом проекте:
- *   • baseURL вычисляется в рантайме (same-origin через nginx / прямой gateway);
+ *   • baseURL вычисляется в рантайме (same-origin через Traefik / прямой gateway);
  *   • refresh — один на всё приложение, с mutex'ом и cooldown'ом, поэтому
  *     параллельные 401 не устраивают каскад и не съедают one-time refresh-токен;
  *   • cross-tab синхронизация refresh через BroadcastChannel;

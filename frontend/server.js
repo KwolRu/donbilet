@@ -17,7 +17,7 @@ const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
-const gatewayUrl = process.env.GATEWAY_PROXY_URL || "http://127.0.0.1:5000";
+const gatewayUrl = process.env.GATEWAY_PROXY_URL || "http://127.0.0.1:5200";
 
 // Единый прокси: HTTP и WebSocket. Тенант-заголовки не проставляются —
 // workspace резолвится из JWT на gateway (см. ADR-0002).

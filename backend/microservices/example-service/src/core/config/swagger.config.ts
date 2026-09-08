@@ -6,7 +6,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 // «Try it out» работал и при запуске напрямую, и через gateway.
 export const setupSwagger = (app: INestApplication) => {
   const port = Number(process.env.EXAMPLE_SERVICE_PORT || 5001);
-  const title = process.env.APP_NAME || '__APP_NAME__';
+  const title = process.env.APP_NAME || 'DonBilet';
 
   const config = new DocumentBuilder()
     .setTitle(`${title} API`)

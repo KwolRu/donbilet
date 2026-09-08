@@ -11,8 +11,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "__APP_NAME__",
-  description: "__APP_NAME__",
+  title: "DonBilet",
+  description: "DonBilet",
   other: { charset: "utf-8" },
 };
 

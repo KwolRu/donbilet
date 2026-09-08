@@ -1,5 +1,5 @@
 # Поднимает локальное окружение бэкенда:
-#   1. инфраструктура в Docker (postgres, redis, nginx) — из корневого compose;
+#   1. инфраструктура в Docker (postgres, redis, traefik) — из корневого compose;
 #   2. Prisma client + миграции + runtime-роль;
 #   3. все сервисы на хосте, каждый в своём окне, в watch-режиме.
 #
@@ -14,7 +14,7 @@ $backendRoot = $PWD.Path
 $repoRoot = (Get-Item $backendRoot).Parent.FullName
 
 # ─── 1. Инфраструктура ────────────────────────────────────────────────────────
-Write-Host "==> Starting infrastructure (postgres, redis, nginx)..."
+Write-Host "==> Starting infrastructure (postgres, redis, traefik)..."
 Set-Location $repoRoot
 
 if (-not (Test-Path ".\.env")) {
@@ -66,8 +66,9 @@ foreach ($service in $services) {
 
 Write-Host ""
 Write-Host "==> Backend is up."
-Write-Host "    Gateway:  http://localhost:5000/api"
-Write-Host "    Swagger:  http://localhost:5001/api/docs"
+Write-Host "    Gateway:  http://localhost:5200/api"
+Write-Host "    Swagger:  http://localhost:5201/api/docs"
 Write-Host ""
 Write-Host "    Фронтенд запускается отдельно:  cd frontend && bun run dev"
-Write-Host "    Приложение целиком (через nginx): http://localhost:8080"
+Write-Host "    Приложение целиком (через Traefik): http://localhost:8080"
+Write-Host "    Дашборд Traefik:                   http://localhost:8081"

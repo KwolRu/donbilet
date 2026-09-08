@@ -1,5 +1,5 @@
 const FALLBACK_PUBLIC_ENDPOINT = "https://s3.ru-7.storage.selcloud.ru";
-const FALLBACK_BUCKET = "__APP_SLUG__";
+const FALLBACK_BUCKET = "donbilet";
 
 function envEndpoint(): string | undefined {
   return process.env.NEXT_PUBLIC_S3_ENDPOINT?.trim();
