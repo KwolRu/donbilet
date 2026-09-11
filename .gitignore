@@ -39,3 +39,17 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# dev server logs
+.next-start-*.log
+.next-start-*.err.log
+
+# leftover media from video-host copy (not part of the app)
+/audio
+/books
+/media
+/videos
+/ServerWid*.exe
+
+# local tooling
+/.claude
