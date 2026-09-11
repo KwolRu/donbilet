@@ -31,10 +31,12 @@ DonBilet — онлайн-продажа билетов на междугоро�
 | Документ | О чём |
 |---|---|
 | [plan-tz/tz.md](plan-tz/tz.md) | Текст ТЗ: 26 функциональных пунктов + 5 технических требований |
+| [plan-tz/api-donbilet-v2.md](plan-tz/api-donbilet-v2.md) | **Контракт действующего API DonBilet** из Postman-коллекции |
 | [plan-tz/DonBilet — технологический стек и целевая архитектура.md](plan-tz/DonBilet%20—%20технологический%20стек%20и%20целевая%20архитектура.md) | Целевая архитектура: Next.js + NestJS, 11 доменных сервисов, монорепо, план вывода iDempiere |
-| [plan-tz/roadmap.md](plan-tz/roadmap.md) | **Roadmap: 18 фаз в двух треках, оценки, матрица покрытия ТЗ, риски** |
-| [../Current.md](../Current.md) | Актуальное состояние проекта — обновляется еженедельно |
-| [../reports/](../reports/) | Отчёты по завершённым фазам |
+| [plan-tz/roadmap.md](plan-tz/roadmap.md) | **Roadmap v2: 11 фаз, 35 недель, матрица покрытия ТЗ, риски** |
+| [../audit/ROADMAP.md](../audit/ROADMAP.md) | Утверждённый scope и статусы фаз |
+| [../audit/CURRENT.md](../audit/CURRENT.md) | Актуальное состояние проекта |
+| [../audit/reports/](../audit/reports/) | Отчёты по фазам |
 
 ## Краткий вывод
 
