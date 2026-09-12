@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { isAppRoutePath, isAuthPublicPagePath } from "./lib/routing/auth-paths";
-import { isAccountPath } from "./lib/routing/public-paths";
+import { ACCOUNT_ROUTES, isAccountPath } from "./lib/routing/public-paths";
 
 /**
  * Next.js 16: бывший `middleware.ts`, экспорт называется `proxy`.
@@ -48,7 +48,20 @@ export function proxy(request: NextRequest) {
 
   if (isAuthPublicPagePath(pathname) && hasSession) {
     const url = request.nextUrl.clone();
-    url.pathname = "/app";
+
+    /*
+     * Вошедшего уводим туда, откуда его сюда прислали (`?from=`), иначе — в
+     * личный кабинет покупателя. Раньше здесь стоял `/app` — раздел CRM
+     * оператора, которого ещё нет: любой заход на `/login` с живой сессией
+     * заканчивался страницей 404.
+     *
+     * `from` берём только для собственных путей приложения: внешний адрес в
+     * этом параметре превратил бы вход в открытый редиректор на чужой сайт.
+     */
+    const from = request.nextUrl.searchParams.get("from");
+    const safeFrom = from && from.startsWith("/") && !from.startsWith("//") ? from : null;
+
+    url.pathname = safeFrom ?? ACCOUNT_ROUTES.root;
     url.search = "";
     return NextResponse.redirect(url);
   }

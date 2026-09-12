@@ -11,7 +11,7 @@ export function DashedBorderBox({
   className = "",
   radius = 24,
   dash = "8 8",
-  stroke = "#cecdd4 ",
+  stroke = "#d9d9d9",
 }: DashedBorderBoxProps) {
   return (
     <div

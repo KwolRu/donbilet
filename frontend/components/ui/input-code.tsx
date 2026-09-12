@@ -116,7 +116,7 @@ export function InputCode({
                   />
                   {!filled &&
                     (disabled ? (
-                      <div className="w-2 h-2 bg-[#eeeef0] rounded-full pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
+                      <div className="w-2 h-2 bg-[#f6f6f6] rounded-full pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
                     ) : (
                       <div className="w-2 h-2 bg-dark-grey rounded-full pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
                     ))}

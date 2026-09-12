@@ -27,8 +27,11 @@ export const PUBLIC_ROUTES = {
   partners: "/partner-form",
   hotels: "/hotels",
   rail: "/poezda",
+  avia: "/avia",
   publicOffer: "/public-offer",
   privacyPolicy: "/privacy-policy",
+  personalDataConsent: "/personal-data-consent",
+  support: "/support",
   insurance: "/insurance",
 } as const;
 
@@ -51,6 +54,14 @@ export const CHECKOUT_ROUTES = {
   reservationConfirm: "/reservation-confirm",
   result: "/result",
   thankYou: "/thank",
+} as const;
+
+/**
+ * Экраны входа. Открыты без сессии — список для `proxy.ts` живёт отдельно,
+ * в `auth-paths.ts`; здесь только адреса для ссылок.
+ */
+export const AUTH_ROUTES = {
+  login: "/login",
 } as const;
 
 /** Личный кабинет — требует сессии покупателя. */
@@ -82,6 +93,20 @@ export function isPublicSitePath(pathname: string): boolean {
 /** Требует ли путь сессии покупателя. */
 export function isAccountPath(pathname: string): boolean {
   return matchesPrefix(pathname, ACCOUNT_ROUTES.root);
+}
+
+/**
+ * Каркас, в котором живёт путь: `site` — шапка с футером публичного сайта,
+ * `account` — белая шапка с боковым меню кабинета и входа.
+ *
+ * Нужен, чтобы отличить смену страницы от смены всего шаблона: первая
+ * проходит мягким `PageTransition`, вторая показывает экран загрузки.
+ * Соответствует group-сегментам `app/(public)` и `app/(auth)`.
+ */
+export function routeShell(pathname: string): "site" | "account" {
+  if (isAccountPath(pathname)) return "account";
+  if (matchesPrefix(pathname, AUTH_ROUTES.login)) return "account";
+  return "site";
 }
 
 /**

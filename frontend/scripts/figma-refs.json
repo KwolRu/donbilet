@@ -1,0 +1,40 @@
+{
+  "comment": [
+    "Реестр сверок «макет ↔ реализация».",
+    "",
+    "`node` — id узла в Figma (файл aCYktR90FQIZLDBVn9YSl2). Он здесь не ради",
+    "автоматизации, а чтобы эталон можно было переснять тем же кадром, когда",
+    "макет поправят: без записанного id через неделю никто не вспомнит, откуда",
+    "взялась картинка.",
+    "",
+    "Как обновить эталон:",
+    "  1. mcp__figma__get_screenshot с этим `node` и maxDimension = ширина узла;",
+    "  2. curl -sL -o <ref> \"<url из ответа>\".",
+    "",
+    "`route` + `selector` — что снять на нашей стороне. Пустой selector = вся",
+    "страница целиком."
+  ],
+  "pairs": [
+    {
+      "name": "Популярные направления",
+      "node": "2297:51103",
+      "ref": "shots/figma/sec-popular.png",
+      "route": "/",
+      "selector": "section >> nth=1"
+    },
+    {
+      "name": "Почему путешествуют с ДонБилет",
+      "node": "2297:51118",
+      "ref": "shots/figma/sec-why.png",
+      "route": "/",
+      "selector": "section >> nth=2"
+    },
+    {
+      "name": "Баннер для бизнеса",
+      "node": "2297:51144",
+      "ref": "shots/figma/sec-banner.png",
+      "route": "/",
+      "selector": "section >> nth=3"
+    }
+  ]
+}

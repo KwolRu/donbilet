@@ -8,8 +8,8 @@
   --bg-label-soft_02: #e8f5e9;
   --text-success: #2e7d32;
 
-  --bg-surface-base-primary-20: rgba(38, 36, 46, 0.2);
-  --bg-surface-base-primary-30: rgba(38, 36, 46, 0.3);
+  --bg-surface-base-primary-20: rgba(25, 25, 25, 0.2);
+  --bg-surface-base-primary-30: rgba(25, 25, 25, 0.3);
 }
 
 @theme {
@@ -19,83 +19,93 @@
   --breakpoint-desktop: 1440px;
   --breakpoint-desktopL: 1920px;
 
-  --color-indigo-700: #4338ca;
-  --color-primary: #5e46fb;
-  --color-primary-hover: #480fdb;
-  --color-secondary: #26242e;
-  --color-secondary-hover: #0f0f14;
-  --color-tint: #eeeef0;
-  --color-tint-foreground: #afaeba;
-  --color-dark-grey: #595669;
-  --color-tertiary: #cecdd4;
+  /*
+   * Палитра шаблона переведена на идентичность ДонБилет: акцент — жёлтый
+   * #ffc700, нейтрали — из макета (#191919 / #525252 / #bfbfbf / #f6f6f6).
+   * Имена токенов оставлены прежними, поэтому компоненты `components/ui`
+   * перекрашиваются без правок разметки.
+   *
+   * Тёмно-жёлтый #a67f00 — для случаев, где по фону идёт белый текст:
+   * на #ffc700 белый не читается.
+   */
+  --color-indigo-700: #a67f00;
+  --color-primary: #ffc700;
+  --color-primary-hover: #e6b400;
+  --color-secondary: #191919;
+  --color-secondary-hover: #000000;
+  --color-tint: #f6f6f6;
+  --color-tint-foreground: #bfbfbf;
+  --color-dark-grey: #525252;
+  --color-tertiary: #d9d9d9;
   --color-error: #e6282d;
-  --color-linear: #dfe2ea;
-  --color-linear-hover: #7a61ff;
+  --color-linear: #d9d9d9;
+  --color-linear-hover: #ffc700;
   --color-surface: #ffffff;
-  --color-surface-elevated: #e7eafe;
-  --color-surface-tertiary: #f5f5fa;
+  --color-surface-elevated: #fff8e0;
+  --color-surface-tertiary: #f6f6f6;
 
-  --color-border-subtle: #eeeef0;
-  --color-border-default: #cecdd4;
-  --color-bg-button-primary-disabled: #eeeef0;
-  --color-text-button-primary-disabled: #afaeba;
+  --color-border-subtle: #f6f6f6;
+  --color-border-default: #d9d9d9;
+  --color-bg-button-primary-disabled: #f6f6f6;
+  --color-text-button-primary-disabled: #d9d9d9;
   --color-bg-state-base-error: #fff1f1;
   --color-text-error: #e6282d;
   --color-text-info: #ff5900;
 
   --color-bg-slate-base-info: #fcf4ec;
 
-  --color-text-primary: #26242e;
-  --color-text-secondary: #6c6a78;
-  --color-text-tertiary: #afaeba;
-  --color-text-disabled: #afaeba;
-  --color-text-icon-disabled: #afaeba;
+  --color-text-primary: #191919;
+  --color-text-secondary: #525252;
+  --color-text-tertiary: #bfbfbf;
+  --color-text-disabled: #bfbfbf;
+  --color-text-icon-disabled: #bfbfbf;
   /** Алиас для утилиты `text-icon-disabled` (Lucide берёт stroke из currentColor). */
-  --color-icon-disabled: #afaeba;
+  --color-icon-disabled: #bfbfbf;
 
-  --color-icon-primary: #26242e;
+  --color-icon-primary: #191919;
 
   --color-bg-surface-base-default: #ffffff;
-  --color-bg-surface-base-tertiary: #f5f5fa;
+  --color-bg-surface-base-tertiary: #f6f6f6;
   --color-bg-surface-base-error: #ff5b7a;
-  --color-bg-surface-base-disabled: #eeeef0;
-  --color-bg-surface-base-layout: #f5f5f9;
+  --color-bg-surface-base-disabled: #f6f6f6;
+  --color-bg-surface-base-layout: #f6f6f6;
 
-  --color-text-button-primary-normal: #ffffff;
-  --color-text-button-ghost-disabled: #afaeba;
-  --color-bg-button-primary-normal: #6349ff;
+  /* Текст и иконка на основной кнопке тёмные: фон жёлтый, белое не читается. */
+  --color-text-button-primary-normal: #191919;
+  --color-text-button-ghost-disabled: #bfbfbf;
+  --color-bg-button-primary-normal: #ffc700;
   --color-bg-button-ghost-disabled: transparent;
 
-  --color-icon-primary: #26242e;
-  --color-icon-button-primary-normal: #ffffff;
-  --color-icon-button-ghost-disabled: #afaeba;
-  --color-icon-button-ghost-normal: #595669;
-  --color-icon-button-linear-normal: #595669;
+  --color-icon-primary: #191919;
+  --color-icon-button-primary-normal: #191919;
+  --color-icon-button-ghost-disabled: #bfbfbf;
+  --color-icon-button-ghost-normal: #525252;
+  --color-icon-button-linear-normal: #525252;
 
   --color-bg-button-linear-normal: transparent;
-  --color-border-button-linear-normal: #6349ff;
-  --color-text-button-linear-normal: #595669;
-  --color-text-button-linear-hover: #480fdb;
+  --color-border-button-linear-normal: #f6f6f6;
+  --color-text-button-linear-normal: #191919;
+  --color-text-button-linear-hover: #525252;
   --color-surface-base-success: #189d57;
 
-  --color-bg-surface-base-inverse: #26242e;
+  --color-bg-surface-base-inverse: #191919;
   --color-text-inverse: #ffffff;
 
-  --border-default: #cecdd4;
-  --border-subtle: #eeeef0;
-  --border-hover: #480fdb;
+  --border-default: #d9d9d9;
+  --border-subtle: #f6f6f6;
+  --border-hover: #191919;
 
-  --color-text-link-hover: #480fdb;
-  --color-text-link: #5e46fb;
-  --color-Icon-accent: #3a2590;
+  --color-text-link-hover: #525252;
+  --color-text-link: #191919;
+  --color-Icon-accent: #a67f00;
   /* ─── Elevated ─── */
-  --color-bg-surface-base-elevated: #e7eafe;
+  --color-bg-surface-base-elevated: #fff8e0;
 
   /* ─── Base ─── */
-  --color-bg-surface-base-base: #5e46fb;
-  --color-bg-surface-base-hover: #480fdb;
-  --color-bg-label-soft_01: #e7eafe;
-  --color-bg-surface-base-primary: #26242e;
+  --color-bg-surface-base-base: #ffc700;
+  --color-bg-surface-base-hover: #e6b400;
+  --color-bg-label-soft_01: #fff8e0;
+  --color-bg-surface-base-primary: #191919;
   --color-bg-state-base-warning: #fef8e1;
   --color-bg-state-base-info: #e5f2ff;
   --color-text-warning: #ff5b00;
@@ -104,16 +114,16 @@
   --color-bg-status-dropped: #e6282d;
 
   /* ─── Icon ─── */
-  --color-icon-secondary: #595669;
-  --color-icon-hover: #480fdb;
+  --color-icon-secondary: #525252;
+  --color-icon-hover: #191919;
 
   /* ─── Button Secondary ─── */
-  --color-bg-button-secondary-normal: #26242e;
+  --color-bg-button-secondary-normal: #191919;
   --color-text-button-secondary-normal: #ffffff;
   --color-icon-button-secondary-normal: #ffffff;
-  --color-surface-base-tertiary: #f5f5f9;
-  --color-surface-base-disabled: #eeeef0;
-  --color-bg-surface-base-secondary: #595669;
+  --color-surface-base-tertiary: #f6f6f6;
+  --color-surface-base-disabled: #f6f6f6;
+  --color-bg-surface-base-secondary: #525252;
   --color-text-success-inverse: #064b26;
   --color-bg-state-base-success: #d7feea;
   --color-Icon-state-success: #189d57;
@@ -121,13 +131,13 @@
   --color-bg-state-base-info-inverse: #0070e0;
   --color-bg-state-base-warning-inverse: #eb4a00;
   --color-bg-state-base-error-inverse: #d12026;
-  --color-bg-surface-base-inverse: #0f0f14;
+  --color-bg-surface-base-inverse: #000000;
   --color-bg-label-strong_10: #ff5900;
   --color-bg-surface-base-success: #189d57;
   --text-error: #e6282d;
 
   /* ─── Label colors (Figma): пары soft/strong для палитры текста ─── */
-  --color-bg-label-strong_01: #5e46fb;
+  --color-bg-label-strong_01: #a67f00;
   --color-bg-label-soft_02: #d7feea;
   --color-bg-label-strong_02: #189d57;
   --color-bg-label-soft_03: #ffe7f0;
@@ -142,8 +152,8 @@
   --color-bg-label-strong_07: #0682fe;
   --color-bg-label-soft_08: #e5f2ff;
   --color-bg-label-strong_08: #50a5ff;
-  --color-bg-label-soft_09: #eeeef0;
-  --color-bg-label-strong_09: #26242e;
+  --color-bg-label-soft_09: #f6f6f6;
+  --color-bg-label-strong_09: #191919;
   --color-bg-label-soft_10: #fcf4ec;
   --color-bg-label-transparent_06: rgba(230, 40, 45, 0.08);
 
@@ -153,28 +163,244 @@
 
   /* ─── Button linear disabled / secondary hover (тулбар текста) ─── */
   --color-bg-button-linear-disabled: transparent;
-  --color-border-button-linear-disabled: #eeeef0;
-  --color-text-button-linear-disabled: #afaeba;
-  --color-bg-button-secondary-hover: #0f0f14;
+  --color-border-button-linear-disabled: #f6f6f6;
+  --color-text-button-linear-disabled: #bfbfbf;
+  --color-bg-button-secondary-hover: #000000;
   --color-text-button-secondary-hover: #ffffff;
 
-  --color-outline-border-subtle: #eeeef0;
-  --color-outline-Icon-primary: #5e46fb;
-  --color-outline-Icon-secondary: #595669;
-  --color-outline-Icon-accent: #3a2590;
-  --color-outline-Icon-button-ghost-normal: #595669;
+  --color-outline-border-subtle: #f6f6f6;
+  --color-outline-Icon-primary: #191919;
+  --color-outline-Icon-secondary: #525252;
+  --color-outline-Icon-accent: #a67f00;
+  --color-outline-Icon-button-ghost-normal: #525252;
 
   --color-text-success: #189d57;
+
+  /* ─── DonBilet: токены из макета ──────────────────────────────────────────
+   *
+   * Имена повторяют переменные Figma один в один, чтобы вёрстку можно было
+   * сверять с макетом без перевода. Опечатка `lianer` (вместо `liner`) —
+   * из макета; исправлять её здесь нельзя, иначе связь с Figma теряется.
+   *
+   * Токены ниже — для новой вёрстки публичного сайта. Палитра шаблона выше
+   * перекрашена в те же цвета, поэтому старые `components/ui` выглядят
+   * одинаково с новыми и переписывать их не требуется.
+   */
+
+  /* Поверхности */
+  --color-db-surface-base: #ffc700; /* фирменный жёлтый */
+  --color-db-surface-primary: #191919; /* почти чёрный: футер, кнопки */
+  --color-db-surface-secondary: #525252; /* плашки соцсетей в футере */
+  --color-db-surface-default: #ffffff;
+  --color-db-surface-muted: #f6f6f6; /* фон шапки */
+
+  /* Текст */
+  --color-db-text-primary: #191919;
+  --color-db-text-secondary: #525252; /* описания секций, подписи полей */
+  --color-db-text-tertiary: #bfbfbf; /* вторичный текст на тёмном */
+  --color-db-text-inverse: #ffffff;
+  --color-db-button-text-disabled: #d9d9d9;
+
+  /* Границы */
+  --color-db-border-subtle: #f6f6f6; /* обводка кнопок шапки */
+  --color-db-border-strong: #737373; /* разделители в футере */
+  --color-db-border-default: #d9d9d9; /* обводка полей ввода */
+  --color-db-border-hover: #f4be06; /* активное поле — жёлтая, не тёмная */
+  --color-db-border-error: #e6282d;
+
+  /* Подложки состояний поля: полупрозрачные, поверх белого. */
+  --color-db-field-active: #fff9e680;
+  --color-db-field-error: #fff1f180;
+
+  /* Фиолетовый бейдж «с комфортом» на промо-карточке кабинета. */
+  --color-db-accent: #8a6af6;
+
+  /* Текущий сеанс в профиле — зелёная подложка `bg/label/transparent_02`. */
+  --color-db-session-current: #d7feea80;
+
+  /* Кнопки. `lianer` — вариант с обводкой на светлом фоне. */
+  --color-db-button-lianer-bg: #ffffff;
+  --color-db-button-lianer-text: #191919;
+  --color-db-button-primary-bg: #ffc700;
+  --color-db-button-primary-icon: #191919;
+  /* Tertiary — «облегчённая» кнопка: серая плашка без обводки (кабинет). */
+  --color-db-button-tertiary-bg: #f6f6f6;
+  --color-db-button-tertiary-text: #191919;
+
+  --color-db-icon-error: #e6282d;
+
+  /* Типографика макета. Второе значение — line-height из Figma. */
+  --text-db-hero: 40px; /* заголовок hero */
+  --text-db-hero--line-height: 56px;
+  --text-db-page: 36px; /* заголовок контентной страницы: «Новости», «FAQ» */
+  --text-db-page--line-height: 52px;
+  --text-db-subsection: 30px; /* подзаголовок внутри статьи */
+  --text-db-subsection--line-height: 36px;
+  --text-db-article: 16px; /* текст статьи — строка выше, чем у db-body */
+  --text-db-article--line-height: 24px;
+  --text-db-section: 28px; /* заголовок секции */
+  --text-db-section--line-height: 35.56px;
+  --text-db-heading: 22px; /* заголовки колонок футера и карточек */
+  --text-db-heading--line-height: 31.68px;
+  --text-db-card: 22px; /* заголовок карточки новости и преимущества */
+  --text-db-card--line-height: 27.5px;
+  --text-db-item: 18px; /* заголовок вопроса FAQ, название направления */
+  --text-db-item--line-height: 23.58px;
+  --text-db-field: 18px; /* значение поля формы поиска */
+  --text-db-field--line-height: 21.6px;
+  --text-db-body: 16px; /* основной текст */
+  --text-db-body--line-height: 19.84px;
+  --text-db-prose: 16px; /* описания секций — линия выше */
+  --text-db-prose--line-height: 22.4px;
+  --text-db-button: 16px;
+  --text-db-button--line-height: 16.32px;
+  --text-db-caption: 14px; /* «от 5 ч 35 м в пути», подпись тоггла */
+  --text-db-caption--line-height: 16.38px;
+  --text-db-chip: 12px; /* бейджи городов */
+  --text-db-chip--line-height: 15.6px;
+  --text-db-micro: 12px; /* подпись поля, кнопка «Все направления» */
+  --text-db-micro--line-height: 12.24px;
+
+  /* Ширина контента. Шапка и футер — во всю ширину с отступом 32px по бокам:
+   * на экране 1920 это даёт 1856px контента. */
+  --spacing-db-gutter: 32px;
+
+  /* ─── Радиусы: squircle ───────────────────────────────────────────────────
+   *
+   * Все скругления в продукте рисуются как squircle (`corner-shape: squircle`),
+   * а не как дуга окружности. Squircle «съедает» угол мягче, поэтому при
+   * одинаковом значении радиуса выглядит заметно острее круглого — значения
+   * ниже равны удвоенным радиусам из Figma.
+   *
+   * Пара всегда идёт вместе: класс `rounded-db-*` задаёт величину, утилита
+   * `squircle` — форму. Менять скругление по всему сайту нужно здесь, а не в
+   * компонентах.
+   *
+   *   Figma 8  → --radius-db-xs   16
+   *   Figma 12 → --radius-db-sm   24
+   *   Figma 16 → --radius-db-md   32
+   *   Figma 20 → --radius-db-lg   40
+   *   Figma 24 → --radius-db-xl   48
+   *   Figma 32 → --radius-db-2xl  64
+   */
+  /*
+   * Фон всего сайта. Tailwind по умолчанию даёт neutral-100 = #f5f5f5, в макете
+   * — #f6f6f6; переопределяем токен, чтобы класс `bg-neutral-100` и токен
+   * `db-surface-muted` означали один и тот же цвет.
+   */
+  --color-neutral-100: #f6f6f6;
+
+  /* ─── Движение ────────────────────────────────────────────────────────────
+   *
+   * Одна кривая и две длительности на весь продукт: появление чуть дольше
+   * исчезновения — так панель «въезжает» мягко, а закрывается без задержки.
+   */
+  --ease-db: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-db-in: 400ms;
+  --duration-db-out: 260ms;
+
+  --radius-db-xs: 16px;
+  --radius-db-sm: 24px;
+  --radius-db-md: 32px;
+  --radius-db-lg: 40px;
+  --radius-db-xl: 48px;
+  --radius-db-2xl: 64px;
+  --radius-db-full: 1000px;
+}
+
+/**
+ * Форма скругления. Отделена от величины: `corner-shape` поддерживают не все
+ * браузеры, и там, где его нет, углы просто остаются круглыми — вёрстка не
+ * ломается.
+ */
+@utility squircle {
+  corner-shape: squircle;
 }
 
 @layer base {
-  
+
   html,
   body {
     overflow-x: hidden;
   }
+
+  /*
+   * Кабинет и вход занимают ровно высоту экрана: прокручиваются внутренние
+   * области (меню, рабочее поле), а сам документ — нет.
+   *
+   * Без этого страница получает лишнюю полосу прокрутки: она забирает ~10px
+   * ширины, из-за чего шапка не достаёт до правого края и при переходах
+   * появляется и исчезает, дёргая раскладку. На публичном сайте прокрутка
+   * документа остаётся — там контент длиннее экрана по существу.
+   */
+  html:has([data-shell="account"]),
+  html:has([data-shell="account"]) body {
+    overflow: hidden;
+  }
+
+  /*
+   * Полоса прокрутки страницы — в стиле продукта, а не системная.
+   *
+   * Ширина 10px: за системную полосу мышью цепляются привычно, и делать её
+   * тоньше «ради красоты» значит мешать пользоваться. Тонкая 2px-полоса
+   * (`db-scroll`) остаётся для внутренних списков, где она только индикатор.
+   *
+   * Ползунок рисуется с прозрачной рамкой и `background-clip: content-box` —
+   * так у него появляются поля по бокам, а трек не приходится красить.
+   *
+   * `scrollbar-gutter: stable` резервирует место под полосу заранее: без него
+   * короткая страница шире длинной на 10px, и контент прыгает при переходе.
+   */
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-db-border-default) transparent;
+    scrollbar-gutter: stable;
+  }
+
+  html::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  html::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  html::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background-color: var(--color-db-border-default);
+    background-clip: content-box;
+  }
+
+  html::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-db-text-tertiary);
+  }
+
+  /*
+   * Скролл нативный. Плавным делается только программный переход — по якорю
+   * или через `scrollIntoView`; колесо, тачпад и перетаскивание ползунка
+   * работают ровно так, как их обрабатывает браузер. Раньше здесь была
+   * инерция Lenis: она держала собственную позицию и «отбрасывала» страницу,
+   * когда пользователь тянул ползунок мышью.
+   *
+   * `scroll-padding-top` — высота фиксированной шапки: без него якорь
+   * останавливает страницу так, что заголовок прячется под шапкой.
+   */
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 88px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
   body {
     font-family: var(--font-inter), sans-serif;
+    /* Фон всего сайта — #F6F6F6, белыми остаются только карточки. */
+    background-color: var(--color-neutral-100);
   }
 
   a,
@@ -392,6 +618,151 @@
   box-shadow: 0 11px 20px 0 rgba(51, 47, 83, 0.12);
 }
 
+/* ─── Подчёркивание при наведении ───────────────────────────────────────────
+ *
+ * Линия не появляется целиком, а прорисовывается слева направо и так же
+ * уезжает обратно при уходе курсора: `scaleX` с `transform-origin: left`.
+ * Анимируется только трансформация — перерисовки макета не происходит.
+ *
+ * `db-underline` — для кнопок шапки: линия внутри рамки, с отступами по бокам.
+ * `db-link-underline` — для текстовых ссылок (футер): линия вплотную под текст.
+ */
+@utility db-underline {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    right: 12px;
+    bottom: 6px;
+    left: 12px;
+    height: 1.5px;
+    border-radius: 999px;
+    background-color: currentColor;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform var(--duration-db-in) var(--ease-db);
+  }
+
+  &:hover::after,
+  &:focus-visible::after {
+    transform: scaleX(1);
+  }
+}
+
+@utility db-link-underline {
+  position: relative;
+  /* Ссылка по умолчанию inline — у такой ::after позиционируется по строке. */
+  display: inline-block;
+
+  &::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: -3px;
+    left: 0;
+    height: 1.5px;
+    border-radius: 999px;
+    background-color: currentColor;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform var(--duration-db-in) var(--ease-db);
+  }
+
+  &:hover::after,
+  &:focus-visible::after {
+    transform: scaleX(1);
+  }
+}
+
+/* ─── Раскрытие по высоте ───────────────────────────────────────────────────
+ *
+ * `grid-template-rows: 0fr → 1fr` анимирует высоту без её измерения в JS:
+ * контент внутри должен лежать в одном дочернем элементе с `min-height: 0`.
+ */
+@utility db-collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition:
+    grid-template-rows var(--duration-db-in) var(--ease-db),
+    opacity var(--duration-db-in) var(--ease-db);
+  opacity: 0;
+
+  & > * {
+    overflow: hidden;
+    min-height: 0;
+  }
+}
+
+@utility db-collapse-open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+/* ─── Полоса прокрутки в выпадающих панелях ─────────────────────────────────
+ *
+ * В макете это тонкий индикатор справа от списка, а не системный скроллбар.
+ */
+/**
+ * Полоса прокрутки как у страницы, но для внутренней области.
+ *
+ * Нужна там, где прокручивается не окно, а блок — рабочая область кабинета.
+ * Оформление повторяет глобальное: одинаковый скролл в одном интерфейсе.
+ */
+@utility db-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-db-border-default) transparent;
+
+  &::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background-color: var(--color-db-border-default);
+    background-clip: content-box;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-db-text-tertiary);
+  }
+}
+
+@utility db-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-db-border-subtle) transparent;
+
+  &::-webkit-scrollbar {
+    width: 2px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-db-border-subtle);
+    border-radius: 999px;
+  }
+}
+
+/* Пользователь просил систему убрать анимации — уважаем настройку ОС. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 @utility overlay-scrim {
   background-color: rgb(0 0 0 / 0.4);
 }
@@ -524,12 +895,12 @@
   pointer-events: none;
 }
 
-/* Кастомное выделение по макету: фиолетовый фон, белый текст */
+/* Кастомное выделение: фирменный жёлтый фон, тёмный текст */
 .lms-text-block .ProseMirror ::selection {
-  background: var(--bg-button-primary-normal, #5e46fb);
-  color: #fff;
+  background: var(--bg-button-primary-normal, #ffc700);
+  color: #191919;
 }
 .lms-text-block .ProseMirror::selection {
-  background: var(--bg-button-primary-normal, #5e46fb);
-  color: #fff;
+  background: var(--bg-button-primary-normal, #ffc700);
+  color: #191919;
 }

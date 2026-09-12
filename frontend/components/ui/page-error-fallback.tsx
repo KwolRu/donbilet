@@ -1,22 +1,26 @@
 "use client";
 
-import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 
-import errorImage from "@/assets/images/image.png";
 import { getRouteLabel } from "@app/core/configs/routes";
-import { Button } from "@/components/ui/button";
+import { DbButton } from "@/components/ui/db-button";
 import { getServerErrorReturnPath } from "@/lib/routing/server-error-policy";
+
+/**
+ * Содержимое страницы ошибки: код, заголовок, пояснение и одно действие.
+ *
+ * Иллюстрации нет намеренно — вместо неё крупный код ошибки фирменным жёлтым.
+ * Шелл (логотип, фон, копирайт) задаёт `ErrorLayout`, здесь только карточка,
+ * поэтому этот же компонент подходит и для встроенного fallback'а внутри
+ * шапки приложения (`ServerErrorBoundary`).
+ */
 
 type PageErrorFallbackProps = {
   kind?: "page" | "server" | "not-found";
   onRetry?: () => void;
 };
 
-export function PageErrorFallback({
-  kind = "page",
-  onRetry,
-}: PageErrorFallbackProps) {
+export function PageErrorFallback({ kind = "page", onRetry }: PageErrorFallbackProps) {
   const pathname = usePathname();
   const router = useRouter();
   const routeLabel = getRouteLabel(pathname);
@@ -24,25 +28,26 @@ export function PageErrorFallback({
   const content =
     kind === "not-found"
       ? {
-          eyebrow: "404",
+          code: "404",
           title: "Страница не найдена",
-          description: "Возможно, она была удалена или адрес указан неверно.",
+          description:
+            "Возможно, она была удалена или адрес указан неверно. Начните с главной — расписание и билеты на месте.",
           action: "На главную",
         }
       : kind === "server"
         ? {
-            eyebrow: "500",
+            code: "500",
             title: "Ошибка сервера",
             description:
-              "К сожалению, сервис авторизации временно недоступен. Попробуйте ещё раз.",
-            action: "Перезагрузить",
+              "Сервис временно недоступен. Мы уже знаем о проблеме и чиним. Попробуйте повторить через минуту.",
+            action: "Попробовать снова",
           }
         : {
-            eyebrow: null,
+            code: null,
             title:
               routeLabel === "этой странице"
-                ? "К сожалению, возникла ошибка на этой странице"
-                : `К сожалению, на странице «${routeLabel}» возникла ошибка`,
+                ? "На странице возникла ошибка"
+                : `На странице «${routeLabel}» возникла ошибка`,
             description: "Перезагрузите страницу — обычно это помогает.",
             action: "Перезагрузить",
           };
@@ -69,34 +74,32 @@ export function PageErrorFallback({
 
   return (
     <section
-      className="flex min-h-[360px] w-full flex-1 items-center justify-center overflow-auto rounded-3xl bg-white px-6 py-10"
+      className="squircle flex w-full max-w-[720px] flex-col items-center rounded-db-xl bg-db-surface-default px-8 py-14 text-center"
       aria-labelledby="page-error-title"
     >
-      <div className="flex w-full max-w-[680px] flex-col items-center text-center">
-        <Image
-          src={errorImage}
-          alt=""
-          priority
-          unoptimized
-          className="h-auto w-full max-w-[520px]"
-          sizes="(max-width: 768px) 90vw, 520px"
-        />
-        {content.eyebrow ? (
-          <p className="mt-2 text-sm font-medium text-text-link">{content.eyebrow}</p>
-        ) : null}
-        <h1
-          id="page-error-title"
-          className="mt-2 text-2xl font-medium leading-7 text-text-primary"
+      {content.code ? (
+        <p
+          className="text-[96px] font-medium leading-none text-db-surface-base"
+          aria-hidden
         >
-          {content.title}
-        </h1>
-        <p className="mt-2 max-w-[520px] text-base leading-6 text-text-secondary">
-          {content.description}
+          {content.code}
         </p>
-        <Button className="mt-6" onClick={handleAction}>
-          {content.action}
-        </Button>
-      </div>
+      ) : null}
+
+      <h1
+        id="page-error-title"
+        className="mt-6 text-db-section font-medium text-db-text-primary"
+      >
+        {content.title}
+      </h1>
+
+      <p className="mt-3 max-w-[460px] text-db-prose text-db-text-secondary">
+        {content.description}
+      </p>
+
+      <DbButton className="mt-8" size="large" onClick={handleAction}>
+        {content.action}
+      </DbButton>
     </section>
   );
 }

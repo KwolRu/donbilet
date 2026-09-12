@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 import { SERVER_ERROR_EVENT } from "@/lib/routing/server-error-policy";
+import { ErrorLayout } from "@/components/layout/error-layout";
 import { PageErrorFallback } from "@/components/ui/page-error-fallback";
 
 /**
@@ -48,14 +49,14 @@ function ServerErrorBoundaryForPath({
   if (hasServerError) {
     if (variant === "full-page") {
       return (
-        <main className="flex min-h-screen bg-bg-surface-base-layout p-6">
+        <ErrorLayout>
           <PageErrorFallback />
-        </main>
+        </ErrorLayout>
       );
     }
 
     return (
-      <div className="flex min-h-full flex-1 p-6">
+      <div className="flex min-h-full flex-1 items-center justify-center p-6">
         <PageErrorFallback />
       </div>
     );

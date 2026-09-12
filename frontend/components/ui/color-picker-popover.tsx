@@ -43,7 +43,7 @@ export function ColorPickerPopover({ color, onChange }: ColorPickerPopoverProps)
 								color={hexColor}
 								onChange={handleHexChange}
 								prefixed
-								className="w-full bg-transparent text-base font-normal leading-6 text-[#26242E] outline-none"
+								className="w-full bg-transparent text-base font-normal leading-6 text-[#191919] outline-none"
 
 							/>
 						</div>

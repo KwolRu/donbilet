@@ -49,7 +49,7 @@ export const ButtonIcon = forwardRef<HTMLButtonElement, ButtonIconProps>(
             "flex items-center justify-center gap-1 overflow-hidden rounded-[24px] p-3 transition-colors disabled:cursor-not-allowed",
             state === "secondary"
               ? "bg-secondary text-white hover:bg-secondary-hover outline-none [&_svg]:text-white"
-              : "bg-[var(--bg-button-linear-normal,#ffffff)] outline outline-1 outline-offset-[-1px] outline-[var(--border-button-linear-normal,#eeeef0)] hover:outline-text-link-hover",
+              : "bg-[var(--bg-button-linear-normal,#ffffff)] outline outline-1 outline-offset-[-1px] outline-[var(--border-button-linear-normal,#f6f6f6)] hover:outline-text-link-hover",
             className,
           ].join(" ")}
           style={{ cornerShape: "squircle", ...style } as CSSProperties}

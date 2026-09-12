@@ -67,7 +67,7 @@ const THEMES = {
     textHover: "text-text-link-hover",
   },
   dark: {
-    container: "bg-[#26242e] outline outline-white/10",
+    container: "bg-[#191919] outline outline-white/10",
     item: "hover:bg-white/10",
     iconIdle: "text-white",
     iconHover: "text-white",

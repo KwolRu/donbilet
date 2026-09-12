@@ -1,0 +1,54 @@
+import { AccountSidebar } from "@/components/layout/account-sidebar";
+import { SiteHeader } from "@/components/layout/site-header";
+import { PageTransition } from "@/components/layout/page-transition";
+
+/**
+ * Layout зоны авторизации и личного кабинета.
+ *
+ * Отличия от публичного: шапка белая и в потоке (на лендинге она закреплена и
+ * темнеет при прокрутке — здесь прокручивать нечего), футера нет, слева боковое
+ * меню.
+ *
+ * Высота: экран целиком и ни пикселем больше. `h-screen` вместо `min-h-screen`
+ * и `overflow-hidden` на строке — чтобы сайдбар всегда доходил до низа окна, а
+ * длинный контент прокручивался внутри рабочей области, а не тянул страницу.
+ *
+ * Group-сегмент `(auth)` на URL не влияет: вход живёт по `/login`.
+ */
+export default function AuthLayout({ children }: { children: React.ReactNode }) {
+  return (
+    /*
+     * `data-shell="account"` — метка каркаса для стилей документа: по ней
+     * `global.css` выключает прокрутку страницы, чтобы вместо неё работали
+     * внутренние области. Проверять адрес в CSS нельзя, а класс на `body`
+     * из серверного layout не поставить.
+     */
+    <div data-shell="account" className="flex h-screen flex-col bg-db-surface-default">
+      <SiteHeader variant="plain" />
+
+      <div className="flex min-h-0 flex-1 items-stretch">
+        <AccountSidebar />
+
+        {/*
+         * Рабочая область: серое поле, и только. Белую карточку рисует сама
+         * страница — вокруг своего содержимого, но не вокруг заголовка: в
+         * макете «Профиль» и «Изменить» стоят на сером фоне, над карточкой.
+         * Пока карточка жила в layout, вынести из неё заголовок было нельзя.
+         *
+         * Содержимое не центрируется — страницы кабинета начинаются сверху и
+         * занимают всю ширину. Центрирование нужно только экрану входа, и он
+         * делает это сам.
+         */}
+        <main className="db-scrollbar flex min-w-0 flex-1 flex-col overflow-y-auto bg-db-surface-muted p-8">
+          {/*
+           * При переходе между разделами меняется только содержимое страницы.
+           * Шапка, боковое меню и сама рабочая область живут дольше её:
+           * подсветка пункта меню и открытые панели не сбрасываются, а экран
+           * не мигает целиком ради смены середины.
+           */}
+          <PageTransition className="flex flex-1 flex-col">{children}</PageTransition>
+        </main>
+      </div>
+    </div>
+  );
+}

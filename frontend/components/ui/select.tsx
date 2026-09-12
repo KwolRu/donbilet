@@ -51,7 +51,7 @@ const XIcon = () => (
     xmlns="http://www.w3.org/2000/svg"
     className="shrink-0"
   >
-    <path d="M9 3L3 9M3 3L9 9" stroke="#480FDB" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M9 3L3 9M3 3L9 9" stroke="#191919" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 

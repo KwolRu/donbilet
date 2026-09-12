@@ -7,7 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "check:ui": "node scripts/check-search-form.mjs && node scripts/check-header.mjs && node scripts/check-login.mjs && node scripts/check-profile.mjs && node scripts/check-route-loader.mjs && node scripts/check-landing-reveal.mjs",
+    "check:figma": "node scripts/figma-compare.mjs",
+    "shot": "node scripts/shot.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -16,6 +19,7 @@
     "fuzzball": "^2.2.3",
     "imask": "^7.6.1",
     "lucide-react": "^1.7.0",
+    "motion": "^13.2.0",
     "next": "16.2.1",
     "react": "19.2.4",
     "react-colorful": "^5.6.1",
@@ -27,6 +31,7 @@
     "zustand": "^5.0.12"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4",
     "@types/express": "^5.0.6",
     "@types/http-proxy-middleware": "^0.19.3",

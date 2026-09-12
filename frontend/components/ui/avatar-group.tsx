@@ -57,7 +57,7 @@ export function AvatarGroup({
       {restCount > 0 && (
         <div
           className={[
-            "flex items-center justify-center rounded-full border border-white bg-[var(--bg-surface-base-tertiary,#f5f5f9)]",
+            "flex items-center justify-center rounded-full border border-white bg-[var(--bg-surface-base-tertiary,#f6f6f6)]",
             overlapClass,
             size === 20 ? "h-5 w-5" : "",
           ].join(" ")}

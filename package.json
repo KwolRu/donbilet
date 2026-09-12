@@ -10,6 +10,9 @@
     "infra:down": "docker compose -f docker-compose.local.yml down",
     "infra:logs": "docker compose -f docker-compose.local.yml logs -f",
     "smoke": "node ./scripts/smoke-test.mjs",
+    "push": "pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/git/sync-push.ps1",
+    "push:dry": "pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/git/sync-push.ps1 -DryRun",
+    "push:test": "pwsh -NoProfile -ExecutionPolicy Bypass -File ./scripts/git/test-sync-push.ps1",
     "skills:check": "node ./scripts/check-skills.mjs",
     "skills:sync": "node ./scripts/sync-skills.mjs"
   },
