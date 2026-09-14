@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Pencil } from "lucide-react";
 
@@ -9,8 +10,14 @@ import { DbCheckbox } from "@/components/ui/db-checkbox";
 import { DbField } from "@/components/ui/db-field";
 import { DbOtpInput } from "@/components/ui/db-otp-input";
 import { DbTooltip } from "@/components/ui/db-tooltip";
-import { PUBLIC_ROUTES } from "@/lib/routing/public-paths";
-import { looksLikeEmail, requestCode, submitCode } from "@app/core/mocks/auth";
+import { ACCOUNT_ROUTES, PUBLIC_ROUTES } from "@/lib/routing/public-paths";
+import {
+  looksLikeEmail,
+  registerProfile,
+  requestCode,
+  startMockSession,
+  submitCode,
+} from "@app/core/mocks/auth";
 
 /**
  * Карточка входа: почта → код → согласия для нового профиля.
@@ -41,6 +48,35 @@ export function LoginCard() {
   const [marketingConsent, setMarketingConsent] = useState(false);
   const [dataConsent, setDataConsent] = useState(false);
   const reduced = useReducedMotion();
+  const router = useRouter();
+
+  /**
+   * Куда идти после входа.
+   *
+   * `?from=` ставит гейт `proxy.ts`, когда разворачивает с закрытой страницы, —
+   * туда и возвращаем. Адрес читается из `location`, а не через
+   * `useSearchParams`: тот требует обёртки в `Suspense` и уводит страницу из
+   * статики ради одного параметра, который нужен только в обработчике клика.
+   *
+   * Берём только собственные пути: чужой адрес в параметре превратил бы вход
+   * в открытый редиректор. Та же проверка есть и в `proxy.ts` — здесь она
+   * повторена, потому что переход отсюда идёт мимо гейта.
+   */
+  function destination(): string {
+    const from = new URLSearchParams(window.location.search).get("from");
+    const safe = from && from.startsWith("/") && !from.startsWith("//") ? from : null;
+    return safe ?? ACCOUNT_ROUTES.root;
+  }
+
+  /** Общий финал обоих сценариев: открыть сессию и уйти в кабинет. */
+  function enterAccount() {
+    startMockSession();
+    const target = destination();
+    router.replace(target);
+    // Серверные компоненты кабинета рисуются с учётом cookie — без обновления
+    // роутер отдал бы страницу, отрисованную до входа.
+    router.refresh();
+  }
 
   async function sendCode() {
     if (!looksLikeEmail(email)) {
@@ -74,8 +110,24 @@ export function LoginCard() {
         setStep("register");
         return;
       }
-      // Входа как такового пока нет: личный кабинет появится в Ф5.
+
       setCodeError(null);
+      enterAccount();
+    } finally {
+      setPending(false);
+    }
+  }
+
+  /** Регистрация нового профиля: согласия → сессия → кабинет. */
+  async function createProfile() {
+    if (!dataConsent) return;
+
+    setPending(true);
+    try {
+      await registerProfile(email, { data: dataConsent, marketing: marketingConsent });
+      enterAccount();
+    } catch {
+      setCodeError("Не удалось создать профиль. Попробуйте ещё раз");
     } finally {
       setPending(false);
     }
@@ -216,8 +268,9 @@ export function LoginCard() {
                     size="large"
                     fullWidth
                     disabled={!dataConsent || pending}
+                    onClick={() => void createProfile()}
                   >
-                    Создать новый профиль
+                    {pending ? "Создаём профиль…" : "Создать новый профиль"}
                   </DbButton>
                 </>
               )}

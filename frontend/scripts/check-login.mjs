@@ -122,6 +122,42 @@ await step("согласие разблокирует создание проф�
   if (await button.isDisabled()) throw new Error("кнопка осталась заблокированной");
 });
 
+/*
+ * Самое важное: кнопка должна не только разблокироваться, но и сработать.
+ * Раньше у неё вовсе не было обработчика — форма выглядела рабочей, а нажатие
+ * не делало ничего.
+ */
+await step(
+  "создание профиля открывает сессию и ведёт в кабинет",
+  async () => {
+    await page.getByRole("button", { name: "Создать новый профиль" }).click();
+    await page.waitForURL("**/profile", { timeout: 10_000 });
+
+    const cookies = await page.context().cookies();
+    if (!cookies.some((cookie) => cookie.name === "access_token")) {
+      throw new Error("сессия не открыта: cookie access_token нет");
+    }
+  },
+  "login-signed-in.png",
+);
+
+await step("гейт возвращает на страницу, с которой развернул", async () => {
+  await page.context().clearCookies();
+  await page.goto(`${base}/profile/passengers`, { waitUntil: "networkidle" });
+  await page.waitForURL(/\/login\?from=%2Fprofile%2Fpassengers/, { timeout: 6000 });
+
+  await emailField.fill("new.user@example.com");
+  await sendButton.click();
+  await page.getByRole("heading", { name: "Подтвердите вход" }).waitFor({ timeout: 6000 });
+  for (const [index, value] of ["1", "2", "3", "4"].entries()) {
+    await digit(index + 1).fill(value);
+  }
+
+  await page.getByRole("checkbox").first().check({ force: true });
+  await page.getByRole("button", { name: "Создать новый профиль" }).click();
+  await page.waitForURL("**/profile/passengers", { timeout: 10_000 });
+});
+
 await browser.close();
 
 console.log("Экран входа:\n");

@@ -100,6 +100,9 @@ export function DbSelectField({
   onChange,
   searchable = false,
   placeholder = "Выберите",
+  hideLabel = false,
+  compact = false,
+  className,
 }: {
   label: string;
   value: string | null;
@@ -107,6 +110,16 @@ export function DbSelectField({
   onChange: (next: string) => void;
   searchable?: boolean;
   placeholder?: string;
+  /**
+   * Не показывать подпись — она уходит в `aria-label`. Нужно там, где смысл
+   * поля очевиден из самого значения: например сортировка в тулбаре списка,
+   * где «Сначала новые» объясняет себя без слова «Сортировка» над ним.
+   */
+  hideLabel?: boolean;
+  /** Высота 40 вместо 48 — размер элементов тулбара, а не формы. */
+  compact?: boolean;
+  /** Ширина и прочее позиционирование: по умолчанию поле занимает всю строку. */
+  className?: string;
 }) {
   const { open, setOpen, ref } = usePopover();
   const [query, setQuery] = useState("");
@@ -120,26 +133,41 @@ export function DbSelectField({
   }, [options, query]);
 
   return (
-    <div ref={ref} className="relative w-full">
+    <div ref={ref} className={"relative " + (className ?? "w-full")}>
       <button
         type="button"
         aria-expanded={open}
+        aria-label={hideLabel ? label : undefined}
         onClick={() => {
           setOpen(!open);
           setQuery("");
         }}
-        className={dbFieldShellClass({ active: open }) + " text-left"}
+        className={dbFieldShellClass({ active: open }) + " text-left" + (compact ? " py-2" : "")}
       >
-        <DbFieldBody>
-          {/* Пока выбора нет, подпись занимает место значения — как в поле ввода. */}
-          <DbFloatingLabel label={label} floating={Boolean(selected) || open} />
-          <FieldValue
-            label={label}
-            floating={Boolean(selected) || open}
-            value={selected?.label ?? null}
-            placeholder={placeholder}
-          />
-        </DbFieldBody>
+        {hideLabel ? (
+          // Без подписи значение стоит по центру оболочки: плавающей строке
+          // сверху здесь взяться неоткуда, и высота поля постоянна.
+          <span
+            className={
+              "flex min-w-0 flex-1 items-center px-1 " + (compact ? "h-6" : "h-8")
+            }
+          >
+            <span className="truncate text-db-button text-db-text-primary">
+              {selected?.label ?? placeholder}
+            </span>
+          </span>
+        ) : (
+          <DbFieldBody>
+            {/* Пока выбора нет, подпись занимает место значения — как в поле ввода. */}
+            <DbFloatingLabel label={label} floating={Boolean(selected) || open} />
+            <FieldValue
+              label={label}
+              floating={Boolean(selected) || open}
+              value={selected?.label ?? null}
+              placeholder={placeholder}
+            />
+          </DbFieldBody>
+        )}
 
         <ChevronDown
           className={
@@ -151,9 +179,18 @@ export function DbSelectField({
         />
       </button>
 
+      {/*
+       * В компактном режиме панель тянется по самому длинному пункту
+       * (`w-max`, но не уже поля): поле в тулбаре узкое, и подписи вроде
+       * «Сначала дорогие» рвались на две строки. В форме панель по-прежнему
+       * ровно по ширине поля — там она стоит в колонке и расширяться ей некуда.
+       */}
       <DbPopoverPanel
         open={open}
-        className="squircle absolute top-full left-0 z-30 mt-2 flex w-full flex-col rounded-db-md bg-db-surface-default p-4 shadow-[0_0_36px_rgba(0,0,0,0.12)]"
+        className={
+          "squircle absolute top-full left-0 z-30 mt-2 flex flex-col rounded-db-md bg-db-surface-default shadow-[0_0_36px_rgba(0,0,0,0.12)] " +
+          (compact ? "w-max min-w-full p-2" : "w-full p-4")
+        }
       >
         {searchable && (
           <div className="mb-2 flex items-center gap-2 border-b border-db-border-subtle px-1 pt-1 pb-4">
@@ -187,7 +224,9 @@ export function DbSelectField({
                     (active ? "bg-db-surface-muted" : "")
                   }
                 >
-                  <span className="flex-1 pr-1 text-db-button text-db-text-primary">
+                  {/* `whitespace-nowrap`: подпись пункта не рвётся на строки —
+                      панель под неё расширяется сама. */}
+                  <span className="flex-1 pr-1 text-db-button whitespace-nowrap text-db-text-primary">
                     {option.label}
                   </span>
                   {active && (

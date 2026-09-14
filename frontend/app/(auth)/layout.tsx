@@ -39,14 +39,26 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
          * занимают всю ширину. Центрирование нужно только экрану входа, и он
          * делает это сам.
          */}
-        <main className="db-scrollbar flex min-w-0 flex-1 flex-col overflow-y-auto bg-db-surface-muted p-8">
+        {/*
+         * `scrollbar-gutter: stable` — место под полосу прокрутки держится
+         * всегда. Без него списки разной длины сдвигают содержимое по
+         * горизонтали: переключил вкладку, полоса появилась — и заголовок с
+         * фильтрами уехал влево на её ширину.
+         */}
+        <main className="db-scrollbar flex min-w-0 flex-1 flex-col overflow-y-auto bg-db-surface-muted p-8 [scrollbar-gutter:stable]">
           {/*
            * При переходе между разделами меняется только содержимое страницы.
            * Шапка, боковое меню и сама рабочая область живут дольше её:
            * подсветка пункта меню и открытые панели не сбрасываются, а экран
            * не мигает целиком ради смены середины.
            */}
-          <PageTransition className="flex flex-1 flex-col">{children}</PageTransition>
+          {/*
+           * `min-h-0` на обёртке перехода: без него страница, которая хочет
+           * занять ровно высоту рабочей области и прокручиваться внутри себя
+           * (уведомления с лентой сообщений), растягивает её по содержимому —
+           * и прокрутка появляется снаружи, унося с собой заголовок раздела.
+           */}
+          <PageTransition className="flex min-h-0 flex-1 flex-col">{children}</PageTransition>
         </main>
       </div>
     </div>

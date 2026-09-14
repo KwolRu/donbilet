@@ -699,6 +699,59 @@
   opacity: 1;
 }
 
+/* ─── Отрывной билет ────────────────────────────────────────────────────────
+ *
+ * По линии отрыва карточка «надкушена» двумя полукругами. Рисовать их
+ * кружками поверх нельзя: круг приходится красить в цвет фона, и на любом
+ * другом фоне (а тем более на границе двух половин карточки) он читается как
+ * приклеенная нашлёпка — именно это и было видно.
+ *
+ * Поэтому вырез делается маской: обе половины карточки теряют по полукругу,
+ * и сквозь дырку видно то, что лежит под карточкой, чем бы оно ни было.
+ * `mask-composite: intersect` — два выреза на одном элементе; без него
+ * второй градиент просто перекрыл бы первый.
+ */
+@utility ticket-notch-left {
+  mask-image:
+    radial-gradient(circle 10px at 0 0, transparent 98%, #000 100%),
+    radial-gradient(circle 10px at 0 100%, transparent 98%, #000 100%);
+  mask-composite: intersect;
+  -webkit-mask-image:
+    radial-gradient(circle 10px at 0 0, transparent 98%, #000 100%),
+    radial-gradient(circle 10px at 0 100%, transparent 98%, #000 100%);
+  -webkit-mask-composite: source-in;
+}
+
+/**
+ * Линия отрыва — просечка, а не рисованный пунктир.
+ *
+ * В макете по стыку идёт частая штриховка цветом фона (#F6F6F6): будто
+ * карточку прокололи дыроколом. Серая тонкая линия с большими промежутками,
+ * которая была здесь раньше, читалась как обычная граница таблицы.
+ *
+ * Штрих 5px через 5px при толщине 4px — шаг из макета; на тёмном корешке
+ * просечка видна как светлые зубцы, на белой половине — почти незаметна,
+ * ровно как и должно быть.
+ */
+@utility ticket-perforation {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--color-db-surface-muted) 0 5px,
+    transparent 5px 10px
+  );
+}
+
+@utility ticket-notch-right {
+  mask-image:
+    radial-gradient(circle 10px at 100% 0, transparent 98%, #000 100%),
+    radial-gradient(circle 10px at 100% 100%, transparent 98%, #000 100%);
+  mask-composite: intersect;
+  -webkit-mask-image:
+    radial-gradient(circle 10px at 100% 0, transparent 98%, #000 100%),
+    radial-gradient(circle 10px at 100% 100%, transparent 98%, #000 100%);
+  -webkit-mask-composite: source-in;
+}
+
 /* ─── Полоса прокрутки в выпадающих панелях ─────────────────────────────────
  *
  * В макете это тонкий индикатор справа от списка, а не системный скроллбар.
