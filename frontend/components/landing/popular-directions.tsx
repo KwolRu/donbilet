@@ -4,6 +4,7 @@ import { DbLinkButton } from "@/components/ui/db-button";
 import { DbSectionHeading, DbSectionLink } from "@/components/ui/db-primitives";
 import { MOCK_DIRECTIONS } from "@app/core/mocks/landing";
 import { PUBLIC_ROUTES } from "@/lib/routing/public-paths";
+import { buildRacesHref, searchDateAfter } from "@/lib/routing/trip-search-url";
 
 /**
  * «Популярные направления» — четыре карточки в ряд.
@@ -15,6 +16,8 @@ import { PUBLIC_ROUTES } from "@/lib/routing/public-paths";
  * у коротких маршрутов кнопка цены поднимается выше, чем у длинных.
  */
 export function PopularDirections() {
+  const travelDate = searchDateAfter(1);
+
   return (
     <section className="flex w-full flex-col gap-6">
       <DbSectionHeading
@@ -47,7 +50,17 @@ export function PopularDirections() {
                 {direction.from} → {direction.to}
               </h3>
 
-              <DbLinkButton href={direction.href} variant="primary" size="small" fullWidth>
+              <DbLinkButton
+                href={buildRacesHref({
+                  departureCityId: direction.departureCityId,
+                  arrivalCityId: direction.arrivalCityId,
+                  date: travelDate,
+                  passengers: 1,
+                })}
+                variant="primary"
+                size="small"
+                fullWidth
+              >
                 {direction.priceLabel}
               </DbLinkButton>
             </div>

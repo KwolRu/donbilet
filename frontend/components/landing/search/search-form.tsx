@@ -7,6 +7,11 @@ import { DbLinkButton } from "@/components/ui/db-button";
 import { DbChip, DbSegmentedControl, DbToggle } from "@/components/ui/db-primitives";
 import { MOCK_CITIES, type MockCity } from "@app/core/mocks/landing";
 import { PUBLIC_ROUTES } from "@/lib/routing/public-paths";
+import {
+  buildRacesHref,
+  formatSearchDate,
+  type RacesTransport,
+} from "@/lib/routing/trip-search-url";
 import { CityField } from "./city-field";
 import { DateField } from "./date-field";
 import { DEFAULT_PASSENGERS, PassengersField, type Passengers } from "./passengers-field";
@@ -14,11 +19,9 @@ import { DEFAULT_PASSENGERS, PassengersField, type Passengers } from "./passenge
 /**
  * Форма поиска в Hero.
  *
- * Работает на моках: города из `core/mocks/landing`, поиск никуда не ведёт —
- * страница результатов появится в следующей фазе. Состояние держится здесь,
- * а не в сторе: пока форма живёт только на главной. Когда появится страница
- * результатов, состояние переезжает в `core/store/trip-search`, откуда
- * канонические параметры уходят в URL.
+ * Города пока приходят из `core/mocks/landing`, но поиск уже формирует
+ * канонический URL страницы `/races`: направление, дата, число пассажиров и
+ * вид транспорта переживают переход, перезагрузку и отправку ссылки.
  */
 
 const TRANSPORT_TABS = [
@@ -29,6 +32,13 @@ const TRANSPORT_TABS = [
 ] as const;
 
 type Transport = (typeof TRANSPORT_TABS)[number]["value"];
+
+const RACES_TRANSPORT: Record<Transport, RacesTransport> = {
+  bus: "bus",
+  avia: "plane",
+  rail: "train",
+  hotels: "hotel",
+};
 
 /**
  * Быстрые подсказки под формой.
@@ -59,6 +69,17 @@ export function SearchForm() {
   const [date, setDate] = useState<Date>(() => addDays(6));
   const [passengers, setPassengers] = useState<Passengers>({ ...DEFAULT_PASSENGERS, adults: 4 });
   const [hotelsInNewTab, setHotelsInNewTab] = useState(true);
+
+  const searchHref =
+    from && to
+      ? buildRacesHref({
+          departureCityId: from.id,
+          arrivalCityId: to.id,
+          date: formatSearchDate(date),
+          passengers: passengers.adults + passengers.children,
+          transport: RACES_TRANSPORT[transport],
+        })
+      : PUBLIC_ROUTES.search;
 
   function swap() {
     setFrom(to);
@@ -124,7 +145,7 @@ export function SearchForm() {
              * ловит именно клик по ссылке.
              */}
             <DbLinkButton
-              href={PUBLIC_ROUTES.search}
+              href={searchHref}
               variant="primary"
               size="large"
               className="w-[231px] shrink-0"

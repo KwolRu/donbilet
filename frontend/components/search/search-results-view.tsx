@@ -15,6 +15,7 @@ import { PriceStrip } from "./price-strip";
 import { SearchBar } from "./search-bar";
 import { TripCard } from "./trip-card";
 import { TripCompactCard } from "./trip-compact-card";
+import type { RacesSearchQuery } from "@/lib/routing/trip-search-url";
 import {
   FOUND_TRIPS,
   MOCK_TRIPS,
@@ -49,8 +50,10 @@ const HOTELS_AFTER = 3;
 
 type ViewMode = "cards" | "rows";
 
-export function SearchResultsView() {
-  const [transport, setTransport] = useState<TransportTab["value"]>("bus");
+export function SearchResultsView({ initialSearch = {} }: { initialSearch?: RacesSearchQuery }) {
+  const [transport, setTransport] = useState<TransportTab["value"]>(
+    initialSearch.transport ?? "bus",
+  );
   const [dateColumn, setDateColumn] = useState("5");
   const [sort, setSort] = useState<SearchSort>("cheap");
   const [pageSize, setPageSize] = useState("20");
@@ -138,6 +141,7 @@ export function SearchResultsView() {
      */
     <div className="flex w-full flex-col">
       <SearchBar
+        initialSearch={initialSearch}
         transport={transport}
         onTransportChange={(next) => changeSelection(() => setTransport(next))}
       />

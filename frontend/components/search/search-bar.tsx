@@ -8,7 +8,7 @@ import busArt from "@assets/images/landing/Hero/Bus.png";
 import hotelArt from "@assets/images/account/tickets/hotel.png";
 import planeArt from "@assets/images/account/tickets/plane.png";
 import trainArt from "@assets/images/account/tickets/train.png";
-import { DbButton } from "@/components/ui/db-button";
+import { DbLinkButton } from "@/components/ui/db-button";
 import { CityField } from "@/components/landing/search/city-field";
 import { DateField } from "@/components/landing/search/date-field";
 import {
@@ -18,10 +18,30 @@ import {
 } from "@/components/landing/search/passengers-field";
 import { MOCK_CITIES, type MockCity } from "@app/core/mocks/landing";
 import { TRANSPORT_TABS, type TransportTab } from "@app/core/mocks/search";
+import {
+  buildRacesHref,
+  formatSearchDate,
+  type RacesSearchQuery,
+} from "@/lib/routing/trip-search-url";
 
 /** Город по названию: начальные значения полей заданы в макете строками. */
 function findCity(name: string): MockCity | null {
   return MOCK_CITIES.find((city) => city.name === name) ?? null;
+}
+
+function findCityById(id: number | undefined, fallback: string): MockCity | null {
+  return MOCK_CITIES.find((city) => city.id === id) ?? findCity(fallback);
+}
+
+function initialDate(value: string | undefined): Date {
+  if (value) {
+    const parsed = new Date(`${value}T12:00:00`);
+    if (!Number.isNaN(parsed.getTime())) return parsed;
+  }
+
+  const date = new Date();
+  date.setDate(date.getDate() + 3);
+  return date;
 }
 
 /**
@@ -44,20 +64,36 @@ const ART: Record<TransportTab["value"], typeof busArt> = {
 };
 
 export function SearchBar({
+  initialSearch = {},
   transport,
   onTransportChange,
 }: {
+  initialSearch?: RacesSearchQuery;
   transport: TransportTab["value"];
   onTransportChange: (next: TransportTab["value"]) => void;
 }) {
-  const [from, setFrom] = useState<MockCity | null>(findCity("Санкт-Петербург"));
-  const [to, setTo] = useState<MockCity | null>(findCity("Владивосток"));
-  const [date, setDate] = useState<Date>(() => {
-    const next = new Date();
-    next.setDate(next.getDate() + 3);
-    return next;
-  });
-  const [passengers, setPassengers] = useState<Passengers>({ ...DEFAULT_PASSENGERS, adults: 4 });
+  const [from, setFrom] = useState<MockCity | null>(() =>
+    findCityById(initialSearch.departureCityId, "Санкт-Петербург"),
+  );
+  const [to, setTo] = useState<MockCity | null>(() =>
+    findCityById(initialSearch.arrivalCityId, "Владивосток"),
+  );
+  const [date, setDate] = useState<Date>(() => initialDate(initialSearch.date));
+  const [passengers, setPassengers] = useState<Passengers>(() => ({
+    ...DEFAULT_PASSENGERS,
+    adults: initialSearch.passengers ?? 4,
+  }));
+
+  const searchHref =
+    from && to
+      ? buildRacesHref({
+          departureCityId: from.id,
+          arrivalCityId: to.id,
+          date: formatSearchDate(date),
+          passengers: passengers.adults + passengers.children,
+          transport,
+        })
+      : "/races";
 
   function swap() {
     setFrom(to);
@@ -86,9 +122,9 @@ export function SearchBar({
 
           <PassengersField label="Кто едет" value={passengers} onChange={setPassengers} />
 
-          <DbButton variant="primary" size="large" className="w-56 shrink-0">
+          <DbLinkButton href={searchHref} variant="primary" size="large" className="w-56 shrink-0">
             Найти
-          </DbButton>
+          </DbLinkButton>
 
           {/* Обмен городами — на стыке полей «Откуда» и «Куда», как на главной. */}
           <button

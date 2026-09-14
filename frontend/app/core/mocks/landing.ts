@@ -70,12 +70,13 @@ export const MOCK_CITIES: MockCity[] = [
 
 export type MockDirection = {
   id: number;
+  departureCityId: number;
+  arrivalCityId: number;
   from: string;
   to: string;
   durationLabel: string;
   priceLabel: string;
   image: StaticImageData;
-  href: string;
 };
 
 /**
@@ -86,39 +87,43 @@ export type MockDirection = {
 export const MOCK_DIRECTIONS: MockDirection[] = [
   {
     id: 1,
+    departureCityId: 1160663,
+    arrivalCityId: 1084807,
     from: "Ростов-на-Дону",
     to: "Санкт-Петербург",
     durationLabel: "от 24 ч 10 м в пути",
     priceLabel: "от 6 870 ₽",
     image: popular1,
-    href: "/raspisanie/rostov-na-donu-sankt-peterburg",
   },
   {
     id: 2,
+    departureCityId: 1160663,
+    arrivalCityId: 1000101,
     from: "Ростов-на-Дону",
     to: "Москва",
     durationLabel: "от 15 ч 40 м в пути",
     priceLabel: "от 3 450 ₽",
     image: popular2,
-    href: "/raspisanie/rostov-na-donu-moskva",
   },
   {
     id: 3,
+    departureCityId: 1160663,
+    arrivalCityId: 1000105,
     from: "Ростов-на-Дону",
     to: "Краснодар",
     durationLabel: "от 5 ч 35 м в пути",
     priceLabel: "от 1 290 ₽",
     image: popular3,
-    href: "/raspisanie/rostov-na-donu-krasnodar",
   },
   {
     id: 4,
+    departureCityId: 1000102,
+    arrivalCityId: 1000107,
     from: "Таганрог",
     to: "Сочи",
     durationLabel: "от 11 ч 20 м в пути",
     priceLabel: "от 2 780 ₽",
     image: popular4,
-    href: "/raspisanie/taganrog-sochi",
   },
 ];
 

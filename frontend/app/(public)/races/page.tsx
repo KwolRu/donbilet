@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { SearchResultsView } from "@/components/search/search-results-view";
+import { parseRacesSearchParams } from "@/lib/routing/trip-search-url";
 
 export const metadata: Metadata = {
   title: "Поиск автобусных билетов — ДонБилет",
@@ -12,6 +13,12 @@ export const metadata: Metadata = {
  * Выдача поиска. Адрес `/races` совпадает с legacy — сайт много лет в
  * поисковой выдаче, и менять путь нельзя (см. `lib/routing/public-paths.ts`).
  */
-export default function SearchPage() {
-  return <SearchResultsView />;
+export default async function SearchPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const initialSearch = parseRacesSearchParams(await searchParams);
+
+  return <SearchResultsView key={JSON.stringify(initialSearch)} initialSearch={initialSearch} />;
 }
