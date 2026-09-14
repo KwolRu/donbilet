@@ -109,8 +109,8 @@ export function FavoritesView() {
   }
 
   return (
-    <div className="flex w-full flex-col gap-6">
-      <header className="flex flex-col gap-2">
+    <div className="flex w-full flex-1 flex-col gap-6">
+      <header className="flex shrink-0 flex-col gap-2">
         <h1 className="text-db-page font-medium text-db-text-primary">Избранное</h1>
 
         <ListToolbar
@@ -218,7 +218,7 @@ export function FavoritesView() {
 /** Пустое состояние раздела: почему пусто и что с этим делать. */
 function EmptyState({ title, hint }: { title: string; hint: string }) {
   return (
-    <div className="squircle flex flex-col items-center gap-3 rounded-db-xl bg-db-surface-default p-12 text-center">
+    <div className="squircle flex flex-1 flex-col items-center justify-center gap-3 rounded-db-xl bg-db-surface-default p-12 text-center">
       <span className="squircle flex size-16 items-center justify-center rounded-db-md bg-db-surface-muted">
         <Heart className="size-7 text-db-text-tertiary" strokeWidth={1.5} aria-hidden />
       </span>

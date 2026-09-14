@@ -325,6 +325,21 @@
   }
 
   /*
+   * Windows Chromium рисует кнопки со стрелками и у контейнеров без наших
+   * scrollbar-классов. Убираем кнопки глобально; ползунок, колесо мыши,
+   * тачпад и touch-прокрутка остаются нативными.
+   */
+  *::-webkit-scrollbar-button,
+  *::-webkit-scrollbar-button:single-button {
+    display: none;
+    width: 0;
+    height: 0;
+    background: transparent;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  /*
    * Кабинет и вход занимают ровно высоту экрана: прокручиваются внутренние
    * области (меню, рабочее поле), а сам документ — нет.
    *

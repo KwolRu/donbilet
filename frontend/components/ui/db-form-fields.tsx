@@ -197,7 +197,7 @@ export function DbSelectField({
       <DbPopoverPanel
         open={open}
         className={
-          "squircle absolute top-full left-0 z-30 mt-2 flex flex-col rounded-db-md bg-db-surface-default shadow-[0_0_36px_rgba(0,0,0,0.12)] " +
+          "squircle absolute top-full left-0 z-30 mt-2 flex flex-col rounded-db-md bg-db-surface-default shadow-none " +
           (compact ? "w-max min-w-full p-2" : "w-full p-4")
         }
       >
