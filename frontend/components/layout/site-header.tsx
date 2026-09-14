@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Heart } from "lucide-react";
 import { AnimatePresence } from "motion/react";
@@ -34,6 +35,9 @@ import { ACCOUNT_ROUTES, PUBLIC_ROUTES } from "@/lib/routing/public-paths";
  */
 const HEADER_HEIGHT = 72;
 
+/** Маршруты, где шапка белая и стоит в потоке: под ней своя светлая панель. */
+const WHITE_HEADER_PREFIXES = [PUBLIC_ROUTES.search];
+
 /**
  * Кнопка-«линейка» из макета: белый фон, тонкая обводка.
  *
@@ -59,8 +63,18 @@ const LINER_DARK =
  *             В этой зоне страница не прокручивается под шапку, и затемнение
  *             только мешало бы.
  */
-export function SiteHeader({ variant = "landing" }: { variant?: "landing" | "plain" }) {
-  const plain = variant === "plain";
+export function SiteHeader({ variant }: { variant?: "landing" | "plain" }) {
+  const pathname = usePathname();
+
+  /*
+   * Вариант можно задать явно (кабинет), а можно оставить на усмотрение
+   * страницы: там, где сразу под шапкой стоит своя белая панель — выдача
+   * поиска, — затемнение при прокрутке разрезает страницу пополам, и шапка
+   * читается как чужая. На таких маршрутах шапка белая и в потоке.
+   */
+  const plain =
+    variant === "plain" ||
+    (variant === undefined && WHITE_HEADER_PREFIXES.some((prefix) => pathname.startsWith(prefix)));
   const [appModalOpen, setAppModalOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 

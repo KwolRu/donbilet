@@ -49,7 +49,11 @@ export function NotificationsView() {
     );
   }
 
-  function createTicket(topicLabel: string, message: string) {
+  function createTicket(
+    topicLabel: string,
+    message: string,
+    files: { name: string; size: number }[],
+  ) {
     const time = new Intl.DateTimeFormat("ru-RU", { hour: "2-digit", minute: "2-digit" }).format(
       new Date(),
     );
@@ -59,11 +63,22 @@ export function NotificationsView() {
       id,
       kind: "ticket",
       title: topicLabel,
-      preview: message,
+      // В строке списка вложения показываются числом: имена файлов туда не
+      // влезут, а знать, что к обращению что-то приложено, полезно.
+      preview: files.length ? `${message} · файлов: ${files.length}` : message,
       time,
       unread: false,
       date: "Сегодня",
-      messages: [{ id: 1, author: "me", text: message, time, read: false }],
+      messages: [
+        {
+          id: 1,
+          author: "me",
+          text: message,
+          attachments: files.length ? files : undefined,
+          time,
+          read: false,
+        },
+      ],
     };
 
     setThreads((current) => [thread, ...current]);

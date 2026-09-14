@@ -4,8 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { CheckCheck, Info, Paperclip, Send } from "lucide-react";
 
+import { AttachmentButton, AttachmentChips, useAttachments } from "./attachments";
 import { EmptyChatArt } from "./empty-chat-art";
-import type { ChatMessage, NotificationThread } from "@app/core/mocks/notifications";
+import {
+  formatFileSize,
+  type ChatMessage,
+  type NotificationThread,
+} from "@app/core/mocks/notifications";
 
 /**
  * Правая часть раздела: переписка по выбранному уведомлению.
@@ -21,8 +26,7 @@ export function ThreadView({ thread }: { thread: NotificationThread | null }) {
   const reduced = useReducedMotion();
   const [draft, setDraft] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [attachment, setAttachment] = useState<File | null>(null);
-  const fileRef = useRef<HTMLInputElement>(null);
+  const attachments = useAttachments();
   const feedRef = useRef<HTMLDivElement>(null);
 
   /*
@@ -37,7 +41,7 @@ export function ThreadView({ thread }: { thread: NotificationThread | null }) {
     setShownId(threadId);
     setMessages(thread?.messages ?? []);
     setDraft("");
-    setAttachment(null);
+    attachments.clear();
   }
 
   // Лента всегда показывает последнее сообщение — как в любом мессенджере.
@@ -49,14 +53,18 @@ export function ThreadView({ thread }: { thread: NotificationThread | null }) {
 
   function send() {
     const text = draft.trim();
-    if (!text && !attachment) return;
+    if (!text && attachments.files.length === 0) return;
 
     setMessages((current) => [
       ...current,
       {
         id: (current.at(-1)?.id ?? 0) + 1,
         author: "me",
-        text: attachment ? `${text}\n📎 ${attachment.name}`.trim() : text,
+        text,
+        // Вложения уходят отдельным полем, а не строкой в тексте: в сообщении
+        // они рисуются списком, и разбирать их обратно из текста было бы
+        // выдумыванием формата на ровном месте.
+        attachments: attachments.files.map((file) => ({ name: file.name, size: file.size })),
         time: new Intl.DateTimeFormat("ru-RU", { hour: "2-digit", minute: "2-digit" }).format(
           new Date(),
         ),
@@ -64,18 +72,26 @@ export function ThreadView({ thread }: { thread: NotificationThread | null }) {
       },
     ]);
     setDraft("");
-    setAttachment(null);
+    attachments.clear();
   }
 
   if (!thread) {
     return (
       <div className="squircle flex flex-1 flex-col items-center justify-center gap-6 rounded-db-md p-4 outline outline-1 -outline-offset-1 outline-db-border-subtle">
-        <EmptyChatArt />
-        <p className="max-w-96 text-center text-db-subsection font-medium text-db-text-primary">
-          Выберите чат,
-          <br />
-          чтобы начать переписку
-        </p>
+        <motion.div
+          key="empty"
+          initial={reduced ? { opacity: 0 } : { opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: reduced ? 0 : 0.3, ease: [0.22, 1, 0.36, 1] }}
+          className="flex flex-col items-center gap-6"
+        >
+          <EmptyChatArt />
+          <p className="max-w-96 text-center text-db-subsection font-medium text-db-text-primary">
+            Выберите чат,
+            <br />
+            чтобы начать переписку
+          </p>
+        </motion.div>
       </div>
     );
   }
@@ -83,7 +99,19 @@ export function ThreadView({ thread }: { thread: NotificationThread | null }) {
   const answerable = thread.kind === "ticket";
 
   return (
-    <div className="squircle flex min-w-0 flex-1 flex-col gap-6 rounded-db-md p-4 outline outline-1 -outline-offset-1 outline-db-border-subtle">
+    /*
+     * `key` по уведомлению перемонтирует переписку: содержимое проявляется
+     * мягко, вместо того чтобы подмениться кадром. Ключ здесь уместен именно
+     * потому, что при смене чата меняется всё — и лента, и черновик, и
+     * состояние вложений.
+     */
+    <motion.div
+      key={thread.id}
+      initial={reduced ? { opacity: 0 } : { opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: reduced ? 0 : 0.3, ease: [0.22, 1, 0.36, 1] }}
+      className="squircle flex min-w-0 flex-1 flex-col gap-6 rounded-db-md p-4 outline outline-1 -outline-offset-1 outline-db-border-subtle"
+    >
       <span className="shrink-0 text-center text-db-caption text-db-text-secondary">
         {thread.date}
       </span>
@@ -107,9 +135,34 @@ export function ThreadView({ thread }: { thread: NotificationThread | null }) {
                   </span>
                 )}
 
-                <p className="text-db-caption leading-5 whitespace-pre-line text-db-text-primary">
-                  {message.text}
-                </p>
+                {message.text && (
+                  <p className="text-db-caption leading-5 whitespace-pre-line text-db-text-primary">
+                    {message.text}
+                  </p>
+                )}
+
+                {message.attachments && message.attachments.length > 0 && (
+                  <ul className="flex flex-col gap-1">
+                    {message.attachments.map((file) => (
+                      <li
+                        key={file.name}
+                        className="squircle flex items-center gap-2 rounded-db-xs bg-db-surface-default px-3 py-2"
+                      >
+                        <Paperclip
+                          className="size-4 shrink-0 text-db-text-secondary"
+                          strokeWidth={1.5}
+                          aria-hidden
+                        />
+                        <span className="truncate text-db-caption text-db-text-primary">
+                          {file.name}
+                        </span>
+                        <span className="ml-auto shrink-0 text-db-caption text-db-text-tertiary">
+                          {formatFileSize(file.size)}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
 
                 <span className="flex items-center justify-end gap-1 text-db-caption text-db-text-secondary">
                   {message.author === "me" && (
@@ -129,30 +182,21 @@ export function ThreadView({ thread }: { thread: NotificationThread | null }) {
 
       {answerable ? (
         <div className="shrink-0">
-          {/* Вложение живёт над строкой ввода: в самой строке для него нет
-              места, а прятать выбранный файл нельзя — он уже выбран. */}
+          {/* Вложения живут над строкой ввода: в самой строке для них нет
+              места, а прятать выбранное нельзя — оно уже выбрано. */}
+          <AttachmentChips attachments={attachments} className="mb-2" />
+
           <AnimatePresence>
-            {attachment && (
-              <motion.div
-                initial={reduced ? { opacity: 0 } : { opacity: 0, y: 8 }}
+            {attachments.error && (
+              <motion.p
+                initial={reduced ? { opacity: 0 } : { opacity: 0, y: 4 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={reduced ? { opacity: 0 } : { opacity: 0, y: 8 }}
-                transition={{ duration: reduced ? 0 : 0.22, ease: [0.22, 1, 0.36, 1] }}
-                className="mb-2 flex items-center gap-2"
+                exit={reduced ? { opacity: 0 } : { opacity: 0, y: 4 }}
+                transition={{ duration: reduced ? 0 : 0.18 }}
+                className="mb-2 px-1 text-db-micro text-db-text-error"
               >
-                <span className="squircle flex items-center gap-2 rounded-db-xs bg-db-surface-muted px-3 py-2 text-db-caption text-db-text-primary">
-                  <Paperclip className="size-4 text-db-text-secondary" strokeWidth={1.5} aria-hidden />
-                  {attachment.name}
-                  <button
-                    type="button"
-                    onClick={() => setAttachment(null)}
-                    aria-label="Убрать вложение"
-                    className="text-db-text-tertiary transition-colors duration-300 ease-db hover:text-db-text-primary"
-                  >
-                    ×
-                  </button>
-                </span>
-              </motion.div>
+                {attachments.error}
+              </motion.p>
             )}
           </AnimatePresence>
 
@@ -172,26 +216,17 @@ export function ThreadView({ thread }: { thread: NotificationThread | null }) {
             />
 
             <div className="flex shrink-0 items-center gap-1">
-              <input
-                ref={fileRef}
-                type="file"
-                className="sr-only"
-                onChange={(event) => setAttachment(event.target.files?.[0] ?? null)}
-              />
-
-              <button
-                type="button"
-                onClick={() => fileRef.current?.click()}
-                aria-label="Прикрепить файл"
-                className="squircle flex size-10 items-center justify-center rounded-db-sm bg-db-surface-muted transition-[filter,transform] duration-300 ease-db hover:brightness-95 active:scale-95"
+              <AttachmentButton
+                attachments={attachments}
+                className="squircle flex size-10 items-center justify-center rounded-db-sm bg-db-surface-muted transition-[filter,transform,opacity] duration-300 ease-db hover:brightness-95 active:scale-95 disabled:pointer-events-none disabled:opacity-40"
               >
                 <Paperclip className="size-4 text-db-text-secondary" strokeWidth={1.5} aria-hidden />
-              </button>
+              </AttachmentButton>
 
               <button
                 type="button"
                 onClick={send}
-                disabled={!draft.trim() && !attachment}
+                disabled={!draft.trim() && attachments.files.length === 0}
                 aria-label="Отправить сообщение"
                 className="squircle flex size-10 items-center justify-center rounded-db-sm bg-db-button-primary-bg transition-[filter,transform,opacity] duration-300 ease-db hover:brightness-95 active:scale-95 disabled:pointer-events-none disabled:bg-db-surface-muted"
               >
@@ -212,6 +247,6 @@ export function ThreadView({ thread }: { thread: NotificationThread | null }) {
           </p>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }

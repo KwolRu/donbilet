@@ -123,8 +123,10 @@ export function TicketsView() {
   }
 
   return (
-    <div className="flex w-full flex-col gap-6">
-      <header className="flex flex-col gap-2">
+    // `flex-1`: пустое состояние и заставка растягиваются на всю рабочую
+    // область, а не жмутся полосой под тулбаром.
+    <div className="flex w-full flex-1 flex-col gap-6">
+      <header className="flex shrink-0 flex-col gap-2">
         <h1 className="text-db-page font-medium text-db-text-primary">Мои билеты</h1>
 
         <ListToolbar

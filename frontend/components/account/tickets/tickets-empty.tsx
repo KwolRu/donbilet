@@ -29,7 +29,13 @@ export function TicketsEmpty({
 }) {
   const reduced = useReducedMotion();
 
-  const title = query ? `По запросу «${query.trim()}» ничего нет` : "Здесь пока пусто";
+  /*
+   * Длинный запрос обрезаем: он попадает в заголовок 30px, и строка вроде
+   * «фываыфваыфваыфва» разрывает его на две — заголовок перестаёт читаться
+   * как заголовок.
+   */
+  const shownQuery = query.trim().length > 24 ? `${query.trim().slice(0, 24)}…` : query.trim();
+  const title = query ? `По запросу «${shownQuery}» ничего нет` : "Здесь пока пусто";
 
   const description = query
     ? filterLabel
@@ -44,11 +50,16 @@ export function TicketsEmpty({
       initial={reduced ? { opacity: 0 } : { opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: reduced ? 0 : 0.35, ease: [0.22, 1, 0.36, 1] }}
-      className="squircle flex min-h-[420px] flex-col items-center justify-center gap-6 rounded-db-xl bg-db-surface-default p-10 text-center"
+      /*
+       * Блок занимает всю оставшуюся высоту рабочей области, а содержимое
+       * стоит по центру. Иначе на пустом результате получалась узкая белая
+       * полоса под тулбаром и гектар серого фона под ней.
+       */
+      className="squircle flex flex-1 flex-col items-center justify-center gap-6 rounded-db-xl bg-db-surface-default p-10 text-center"
     >
       <EmptyArt />
 
-      <div className="flex max-w-[520px] flex-col gap-2">
+      <div className="flex max-w-[560px] flex-col gap-2">
         <h2 className="text-db-subsection font-medium text-db-text-primary">{title}</h2>
         <p className="text-db-body leading-6 text-db-text-secondary">{description}</p>
       </div>

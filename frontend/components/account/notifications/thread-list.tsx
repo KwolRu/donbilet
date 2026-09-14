@@ -87,17 +87,30 @@ export function ThreadList({
                   onClick={() => onSelect(thread)}
                   aria-current={active}
                   className={
-                    "squircle flex w-full flex-col gap-1 rounded-db-md p-4 text-left " +
-                    "outline outline-1 -outline-offset-1 " +
+                    "squircle relative flex w-full flex-col gap-1 rounded-db-md p-4 text-left " +
+                    "outline outline-1 -outline-offset-1 outline-db-border-subtle " +
                     "transition-[background-color,outline-color] duration-300 ease-db " +
-                    (active
-                      ? "bg-db-surface-muted outline-db-border-subtle"
-                      : thread.unread
-                        ? "bg-bg-surface-base-elevated outline-transparent hover:brightness-[0.98]"
-                        : "bg-db-surface-default outline-db-border-subtle hover:bg-db-surface-muted")
+                    (thread.unread && !active
+                      ? "bg-bg-surface-base-elevated outline-transparent hover:brightness-[0.98]"
+                      : "bg-db-surface-default hover:bg-db-surface-muted")
                   }
                 >
-                  <span className="flex w-full items-center gap-3">
+                  {/*
+                   * Подсветка выбранного — отдельный слой с общим `layoutId`:
+                   * при переходе на соседнее уведомление она переезжает, а не
+                   * гаснет и зажигается в другом месте. Так видно, что список
+                   * один, и взгляд не теряет, куда именно он перешёл.
+                   */}
+                  {active && (
+                    <motion.span
+                      layoutId={reduced ? undefined : "notification-active"}
+                      transition={{ duration: reduced ? 0 : 0.28, ease: [0.22, 1, 0.36, 1] }}
+                      className="squircle absolute inset-0 rounded-db-md bg-db-surface-muted"
+                      aria-hidden
+                    />
+                  )}
+
+                  <span className="relative flex w-full items-center gap-3">
                     <span className="line-clamp-1 flex-1 text-db-item font-medium text-db-text-primary">
                       {thread.title}
                     </span>
@@ -106,7 +119,7 @@ export function ThreadList({
                     </span>
                   </span>
 
-                  <span className="line-clamp-1 w-full text-db-caption text-db-text-secondary">
+                  <span className="relative line-clamp-1 w-full text-db-caption text-db-text-secondary">
                     {thread.preview}
                   </span>
                 </button>

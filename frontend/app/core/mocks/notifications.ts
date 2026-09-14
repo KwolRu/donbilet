@@ -13,6 +13,12 @@
 
 export type ThreadKind = "system" | "ticket";
 
+/** Файл, уже отправленный в сообщении: от `File` остаются имя и размер. */
+export type MessageAttachment = {
+  name: string;
+  size: number;
+};
+
 export type ChatMessage = {
   id: number;
   /** `service` — от ДонБилет, `me` — от пользователя. */
@@ -23,6 +29,8 @@ export type ChatMessage = {
   time: string;
   /** Своё сообщение прочитано оператором — синие галочки в макете. */
   read?: boolean;
+  /** Вложения: к одному сообщению их может быть несколько. */
+  attachments?: MessageAttachment[];
 };
 
 export type NotificationThread = {
@@ -158,9 +166,18 @@ export const SUPPORT_TOPICS = [
 /** Ограничение длины сообщения из макета — счётчик «57/1000». */
 export const SUPPORT_MESSAGE_LIMIT = 1000;
 
-/** Что принимаем вложением. Ограничение нужно и форме, и подсказке под полем. */
-export const ATTACHMENT_ACCEPT = ".pdf,.png,.jpg,.jpeg,.heic";
+/**
+ * Что принимаем вложением. Ограничения нужны и форме, и подсказке под полем:
+ * пользователь должен узнать о перевесе до отправки, а не после.
+ *
+ * Три предела, и каждый про своё: тип файла — что мы умеем показать оператору,
+ * размер одного — что пройдёт через загрузку, количество и общий вес — чтобы
+ * одно обращение не превращалось в архив переписки.
+ */
+export const ATTACHMENT_ACCEPT = ".pdf,.png,.jpg,.jpeg,.heic,.doc,.docx";
 export const ATTACHMENT_MAX_BYTES = 10 * 1024 * 1024;
+export const ATTACHMENTS_MAX_COUNT = 5;
+export const ATTACHMENTS_MAX_TOTAL_BYTES = 25 * 1024 * 1024;
 
 /** «2,4 МБ» — размер файла для подписи вложения. */
 export function formatFileSize(bytes: number): string {

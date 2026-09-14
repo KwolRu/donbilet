@@ -1,4 +1,4 @@
-import avatarDemo from "@assets/images/account/avatar-demo.png";
+import { avatarFor } from "./avatars";
 
 import type { StaticImageData } from "next/image";
 
@@ -24,7 +24,7 @@ export const MOCK_PROFILE: MockProfile = {
   phone: "+7 999 123-45-67",
   email: "alexander_petrovich@mail.ru",
   city: "Новосибирск",
-  avatar: avatarDemo,
+  avatar: avatarFor(0),
 };
 
 export type NotificationSetting = {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronUp, Download, MessageCircle, Star, Trash2, Wallet } from "lucide-react";
+import { ArrowDownToLine, ChevronUp, MessageCircle, Star, Trash2, Wallet } from "lucide-react";
 
 import { DbButton } from "@/components/ui/db-button";
 import { TicketPassengers } from "./ticket-passengers";
@@ -201,12 +201,35 @@ function TicketStub({
           : "bg-db-surface-default outline outline-1 -outline-offset-1 outline-db-border-subtle")
       }
     >
-      {/* Просечка по линии отрыва. Отступ 12px сверху и снизу — чтобы она не
-          упиралась в вырезы, а начиналась после них. */}
-      <span
-        className="ticket-perforation pointer-events-none absolute inset-y-3 -left-0.5 w-1"
+      {/*
+       * Просечка по линии отрыва.
+       *
+       * Рисуется штрихом с круглыми торцами, а не полосатым градиентом:
+       * градиент даёт прямоугольные зубцы, и край выглядел рубленым. `viewBox`
+       * не задаём намеренно — единица SVG равна пикселю, поэтому штрихи не
+       * растягиваются вместе с высотой карточки.
+       *
+       * Отступ 12px сверху и снизу — чтобы просечка не упиралась в вырезы,
+       * а начиналась после них.
+       */}
+      <svg
+        className="pointer-events-none absolute inset-y-3 -left-0.5 w-1"
+        width="4"
+        height="100%"
         aria-hidden
-      />
+      >
+        <line
+          x1="2"
+          y1="3"
+          x2="2"
+          y2="calc(100% - 3px)"
+          stroke="var(--color-db-surface-muted)"
+          strokeWidth="4"
+          strokeLinecap="round"
+          // Штрих 6 плюс два круглых торца по 2 = капсула 10px, промежуток 6.
+          strokeDasharray="6 10"
+        />
+      </svg>
 
       <div className="flex flex-col gap-3">
         {dark ? (
@@ -326,9 +349,14 @@ function TicketStub({
             <DbButton
               variant="primary"
               fullWidth
+              /*
+               * `ArrowDownToLine` вместо `Download`: у последней стрелка
+               * висит над лотком и в размере 16px читается просто как «вниз».
+               * Черта под стрелкой сразу говорит «сохранить файл».
+               */
               leftIcon={
                 paid ? (
-                  <Download className="size-4" strokeWidth={2} aria-hidden />
+                  <ArrowDownToLine className="size-4" strokeWidth={2} aria-hidden />
                 ) : (
                   <Wallet className="size-4" strokeWidth={2} aria-hidden />
                 )

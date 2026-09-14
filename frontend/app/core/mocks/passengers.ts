@@ -1,7 +1,7 @@
 import type { StaticImageData } from "next/image";
 
-import avatarDemo from "@assets/images/account/avatar-demo.png";
 import passengerCover from "@assets/images/account/profile-cover.png";
+import { avatarFor } from "./avatars";
 
 /**
  * Мок-данные раздела «Пассажиры».
@@ -150,7 +150,9 @@ const SEEDS: PassengerSeed[] = [
 export const MOCK_PASSENGERS: Passenger[] = SEEDS.map((seed, index) => ({
   ...seed,
   id: index + 1,
-  avatar: avatarDemo,
+  // Разные лица из набора макета: с одной аватаркой на всех список
+  // выглядит как один человек в десяти документах.
+  avatar: avatarFor(index),
   cover: passengerCover,
 }));
 

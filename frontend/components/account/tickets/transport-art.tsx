@@ -2,21 +2,26 @@ import Image from "next/image";
 import { Bus, Plane, TrainFront } from "lucide-react";
 
 import busArt from "@assets/images/landing/Hero/Bus.png";
+import planeArt from "@assets/images/account/tickets/plane.png";
 import trainArt from "@assets/images/account/tickets/train.png";
 import type { TransportKind } from "@app/core/mocks/tickets";
 
 /**
  * Иллюстрация транспорта в углу карточки билета — 148×85 по макету.
  *
- * Автобус берётся из ассетов hero, поезд выгружен отдельно. Самолёта в
- * макете пока нет — вместо него иконка на сером поле того же размера.
- * Подменять его чужой картинкой нельзя: вид транспорта здесь несёт смысл,
- * а не украшает.
+ * Все три выгружены из макета, из секции `components`: там лежит компонент
+ * `illustrations` с вариантами `type=bus` / `type=train` / `type=plane`.
+ * Автобус берётся из ассетов hero — это та же картинка, что и в макете.
+ *
+ * Иконка-заглушка ниже остаётся на случай нового вида транспорта: лучше
+ * серое поле с иконкой, чем чужая картинка — вид транспорта здесь несёт
+ * смысл, а не украшает.
  */
 
 const ART: Partial<Record<TransportKind, typeof busArt>> = {
   bus: busArt,
   train: trainArt,
+  plane: planeArt,
 };
 
 const FALLBACK_ICON: Record<TransportKind, typeof Bus> = {

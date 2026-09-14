@@ -125,6 +125,70 @@ await step("новое обращение встаёт в начало спис�
   await page.getByRole("textbox", { name: "Введите сообщение" }).waitFor({ timeout: 4000 });
 });
 
+/*
+ * Вложений может быть несколько, и второй поход в диалог добавляет к списку,
+ * а не заменяет его. Файлы делаем на лету — заводить фикстуры в репозитории
+ * ради двух строк текста незачем.
+ */
+await step(
+  "в чат прикрепляются несколько файлов и уходят одним сообщением",
+  async () => {
+    // `first()`: второй скрытый input принадлежит панели поддержки —
+    // она остаётся в DOM и закрытой.
+    const input = page.locator('input[type="file"]').first();
+
+    await input.setInputFiles([
+      { name: "ticket.pdf", mimeType: "application/pdf", buffer: Buffer.from("ticket") },
+      { name: "screenshot.png", mimeType: "image/png", buffer: Buffer.from("png") },
+    ]);
+    await page.waitForTimeout(300);
+
+    // Второй выбор добавляет третий файл, не стирая первые два.
+    await input.setInputFiles([
+      { name: "receipt.jpg", mimeType: "image/jpeg", buffer: Buffer.from("jpeg") },
+    ]);
+    await page.waitForTimeout(300);
+
+    const chips = await page.getByRole("button", { name: /^Убрать файл/ }).count();
+    if (chips !== 3) throw new Error(`ожидалось 3 вложения, показано ${chips}`);
+
+    // Одно убираем — остаются два.
+    await page.getByRole("button", { name: "Убрать файл screenshot.png" }).click();
+    await page.waitForTimeout(300);
+    if ((await page.getByRole("button", { name: /^Убрать файл/ }).count()) !== 2) {
+      throw new Error("вложение не удалилось");
+    }
+
+    await page.getByRole("button", { name: "Отправить сообщение" }).click();
+    await page.waitForTimeout(500);
+
+    // Файлы ушли в сообщение, а строка ввода очистилась.
+    await page.getByText("ticket.pdf").last().waitFor({ timeout: 4000 });
+    await page.getByText("receipt.jpg").last().waitFor({ timeout: 4000 });
+    if (await page.getByRole("button", { name: /^Убрать файл/ }).count()) {
+      throw new Error("вложения остались в поле после отправки");
+    }
+  },
+  "notifications-attachments.png",
+);
+
+await step("файл больше 10 МБ отклоняется с объяснением", async () => {
+  const input = page.locator('input[type="file"]').first();
+  await input.setInputFiles([
+    {
+      name: "huge.pdf",
+      mimeType: "application/pdf",
+      buffer: Buffer.alloc(11 * 1024 * 1024),
+    },
+  ]);
+  await page.waitForTimeout(300);
+
+  await page.getByText(/huge\.pdf — больше 10 МБ/).waitFor({ timeout: 4000 });
+  if (await page.getByRole("button", { name: /^Убрать файл/ }).count()) {
+    throw new Error("слишком большой файл всё же прикрепился");
+  }
+});
+
 await step("прокручивается лента сообщений, а не страница", async () => {
   const pageScroll = await page.evaluate(() => {
     const main = document.querySelector("main");

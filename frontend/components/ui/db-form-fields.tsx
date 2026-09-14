@@ -142,7 +142,16 @@ export function DbSelectField({
           setOpen(!open);
           setQuery("");
         }}
-        className={dbFieldShellClass({ active: open }) + " text-left" + (compact ? " py-2" : "")}
+        /*
+         * В компактном режиме обводки в покое нет: поле стоит в ряду кнопок
+         * и чипов, у которых рамка `subtle`, а серая `default` от формы
+         * выбивалась. Появляется она только когда список открыт.
+         */
+        className={
+          dbFieldShellClass({ active: open }) +
+          " text-left" +
+          (compact ? " py-2" + (open ? "" : " outline-transparent hover:outline-db-border-subtle") : "")
+        }
       >
         {hideLabel ? (
           // Без подписи значение стоит по центру оболочки: плавающей строке
