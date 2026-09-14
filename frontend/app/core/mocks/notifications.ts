@@ -13,11 +13,45 @@
 
 export type ThreadKind = "system" | "ticket";
 
-/** Файл, уже отправленный в сообщении: от `File` остаются имя и размер. */
+/**
+ * Файл, уже отправленный в сообщении.
+ *
+ * `kind` решает, как вложение показывать: картинку и видео открывает
+ * просмотрщик, остальное — только скачивается. Тип приходит с бэкенда вместе
+ * с файлом, а не угадывается по расширению: расширение врёт чаще, чем кажется.
+ *
+ * `url` нет у своих, ещё не загруженных файлов — до ответа сервера показывать
+ * нечего, и просмотрщик такое вложение не откроет.
+ */
+export type AttachmentKind = "image" | "video" | "file";
+
 export type MessageAttachment = {
   name: string;
   size: number;
+  kind?: AttachmentKind;
+  url?: string;
+  /** Кадр-заставка видео: без него в ленте висит чёрный прямоугольник. */
+  poster?: string;
+  /** Длительность видео в секундах — подпись на превью. */
+  duration?: number;
 };
+
+/**
+ * Тип вложения по MIME. Берём его у браузера, а не из расширения: расширение
+ * врёт чаще, чем кажется, и `.jpg` вполне может оказаться документом.
+ */
+export function attachmentKindOf(type: string): AttachmentKind {
+  if (type.startsWith("image/")) return "image";
+  if (type.startsWith("video/")) return "video";
+  return "file";
+}
+
+/** «1:04» — длительность ролика для подписи на превью и в плеере. */
+export function formatDuration(seconds: number): string {
+  const total = Number.isFinite(seconds) ? Math.max(0, Math.round(seconds)) : 0;
+  const minutes = Math.floor(total / 60);
+  return `${minutes}:${String(total % 60).padStart(2, "0")}`;
+}
 
 export type ChatMessage = {
   id: number;
@@ -93,6 +127,34 @@ export const MOCK_THREADS: NotificationThread[] = [
         text: "Спасибо! Подскажите, деньги придут на ту же карту, с которой платил?",
         time: "10:56",
         read: true,
+      },
+      {
+        id: 3,
+        author: "me",
+        text: "Прикладываю фото посадочного и короткое видео с табло на вокзале.",
+        time: "11:02",
+        read: true,
+        attachments: [
+          {
+            name: "boarding-pass.png",
+            size: 2_540_000,
+            kind: "image",
+            url: "/media/demo-photo.png",
+          },
+          {
+            name: "vokzal.webm",
+            size: 446_000,
+            kind: "video",
+            url: "/media/demo-video.webm",
+            poster: "/media/demo-video-poster.png",
+            duration: 6,
+          },
+          {
+            name: "Квитанция об оплате.pdf",
+            size: 184_000,
+            kind: "file",
+          },
+        ],
       },
     ],
   },
@@ -174,7 +236,7 @@ export const SUPPORT_MESSAGE_LIMIT = 1000;
  * размер одного — что пройдёт через загрузку, количество и общий вес — чтобы
  * одно обращение не превращалось в архив переписки.
  */
-export const ATTACHMENT_ACCEPT = ".pdf,.png,.jpg,.jpeg,.heic,.doc,.docx";
+export const ATTACHMENT_ACCEPT = ".pdf,.png,.jpg,.jpeg,.heic,.doc,.docx,.mp4,.webm,.mov";
 export const ATTACHMENT_MAX_BYTES = 10 * 1024 * 1024;
 export const ATTACHMENTS_MAX_COUNT = 5;
 export const ATTACHMENTS_MAX_TOTAL_BYTES = 25 * 1024 * 1024;

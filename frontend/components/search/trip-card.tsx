@@ -48,8 +48,8 @@ export function TripCard({
   onToggleFavorite: () => void;
 }) {
   return (
-    <article className="squircle flex w-full items-stretch rounded-db-xl">
-      <div className="ticket-notch-right squircle flex flex-1 gap-6 rounded-l-db-xl bg-db-surface-default p-6 outline outline-1 -outline-offset-1 outline-db-border-subtle">
+    <article className="squircle group/card flex w-full items-stretch rounded-db-xl transition-[box-shadow] duration-300 ease-db hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)]">
+      <div className="ticket-notch-right squircle flex flex-1 gap-6 rounded-l-db-xl bg-db-surface-default p-6 outline outline-1 -outline-offset-1 outline-db-border-subtle transition-[outline-color] duration-300 ease-db group-hover/card:outline-db-border-default">
         <div className="flex w-44 shrink-0 flex-col justify-between border-r border-db-border-subtle pr-4">
           <span className="squircle w-fit rounded-db-full bg-db-surface-primary px-2 py-0.5 text-db-chip text-db-text-inverse">
             {trip.refundable ? "Возвратный" : "Не возвратный"}
@@ -82,10 +82,10 @@ export function TripCard({
             >
               <Heart
                 className={
-                  "size-4 transition-colors duration-300 ease-db " +
+                  "size-4 transition-[color,transform] duration-300 ease-db " +
                   (trip.favorite
-                    ? "fill-db-icon-error text-db-icon-error"
-                    : "text-db-text-secondary")
+                    ? "scale-110 fill-db-icon-error text-db-icon-error"
+                    : "scale-100 text-db-text-secondary")
                 }
                 strokeWidth={2}
                 aria-hidden
@@ -116,7 +116,7 @@ export function TripCard({
         </div>
       </div>
 
-      <div className="ticket-notch-left squircle relative flex w-[280px] shrink-0 flex-col justify-between gap-4 rounded-r-db-xl bg-db-surface-default p-6 outline outline-1 -outline-offset-1 outline-db-border-subtle">
+      <div className="ticket-notch-left squircle relative flex w-[280px] shrink-0 flex-col justify-between gap-4 rounded-r-db-xl bg-db-surface-default p-6 outline outline-1 -outline-offset-1 outline-db-border-subtle transition-[outline-color] duration-300 ease-db group-hover/card:outline-db-border-default">
         <span
           className="ticket-perforation pointer-events-none absolute inset-y-3 -left-0.5 w-1"
           aria-hidden

@@ -70,6 +70,12 @@ export function SearchResultsView() {
   const [trips, setTrips] = useState<SearchTrip[]>(MOCK_TRIPS);
   const [visible, setVisible] = useState(6);
   const [searching, setSearching] = useState(false);
+  /*
+   * Догрузка отвечает не мгновенно: короткая пауза с подписью «Загружаем…»
+   * честнее мгновенной вставки — с живым API ответ и правда займёт время,
+   * и интерфейс не должен вести себя по-разному до и после подключения.
+   */
+  const [loadingMore, setLoadingMore] = useState(false);
   const reduced = useReducedMotion();
 
   useEffect(() => {
@@ -110,6 +116,14 @@ export function SearchResultsView() {
   const shown = filtered.slice(0, visible);
   const rest = filtered.length - shown.length;
 
+  function loadMore() {
+    setLoadingMore(true);
+    window.setTimeout(() => {
+      setVisible((current) => current + Number(pageSize));
+      setLoadingMore(false);
+    }, 320);
+  }
+
   function toggleFavorite(id: number) {
     setTrips((current) =>
       current.map((trip) => (trip.id === id ? { ...trip, favorite: !trip.favorite } : trip)),
@@ -117,6 +131,11 @@ export function SearchResultsView() {
   }
 
   return (
+    /*
+     * Страница прокручивается целиком, как остальные публичные: своя область
+     * прокрутки внутри выдачи отрезала бы футер и ломала привычное поведение
+     * колеса.
+     */
     <div className="flex w-full flex-col">
       <SearchBar
         transport={transport}
@@ -234,12 +253,14 @@ export function SearchResultsView() {
                 <ViewButton
                   active={view === "cards"}
                   label="Карточками"
+                  reduced={Boolean(reduced)}
                   onClick={() => setView("cards")}
                   icon={<LayoutGrid className="size-4" strokeWidth={1.5} aria-hidden />}
                 />
                 <ViewButton
                   active={view === "rows"}
                   label="Списком"
+                  reduced={Boolean(reduced)}
                   onClick={() => setView("rows")}
                   icon={<List className="size-4" strokeWidth={1.5} aria-hidden />}
                 />
@@ -271,7 +292,18 @@ export function SearchResultsView() {
                     initial={reduced ? { opacity: 0 } : { opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={reduced ? { opacity: 0 } : { opacity: 0, y: -8 }}
-                    transition={{ duration: reduced ? 0 : 0.26, ease: [0.22, 1, 0.36, 1] }}
+                    transition={{
+                      duration: reduced ? 0 : 0.26,
+                      ease: [0.22, 1, 0.36, 1],
+                      /*
+                       * Каскад: каждая следующая карточка стартует на 40мс
+                       * позже. Волна читается как «список собирается», тогда
+                       * как одновременное появление десятка карточек — как
+                       * вспышка. Потолок в 6 шагов: дальше задержка начинает
+                       * ощущаться задержкой.
+                       */
+                      delay: reduced ? 0 : Math.min(index, 5) * 0.04,
+                    }}
                     className="flex flex-col gap-4"
                   >
                     {view === "cards" ? (
@@ -301,9 +333,12 @@ export function SearchResultsView() {
                   variant="secondary"
                   fullWidth
                   className="h-12 p-4"
-                  onClick={() => setVisible((current) => current + Number(pageSize))}
+                  disabled={loadingMore}
+                  onClick={loadMore}
                 >
-                  Показать ещё {Math.min(rest, Number(pageSize))} билетов
+                  {loadingMore
+                    ? "Загружаем…"
+                    : `Показать ещё ${Math.min(rest, Number(pageSize))} билетов`}
                 </DbButton>
               )}
             </div>
@@ -331,11 +366,14 @@ function ViewButton({
   label,
   icon,
   onClick,
+  reduced,
 }: {
   active: boolean;
   label: string;
   icon: React.ReactNode;
   onClick: () => void;
+  /** Тот же флаг, что у всей страницы: анимацию решает один источник. */
+  reduced: boolean;
 }) {
   return (
     <button
@@ -345,12 +383,23 @@ function ViewButton({
       aria-label={label}
       title={label}
       className={
-        "squircle flex size-8 items-center justify-center rounded-db-xs text-db-text-primary " +
-        "transition-colors duration-300 ease-db " +
-        (active ? "bg-db-surface-base" : "hover:bg-db-surface-muted")
+        "squircle relative flex size-8 items-center justify-center rounded-db-xs text-db-text-primary " +
+        "transition-[transform,background-color] duration-300 ease-db active:scale-90 " +
+        (active ? "" : "hover:bg-db-surface-muted")
       }
     >
-      {icon}
+      {/* Подложка переезжает между кнопками, а не гаснет и зажигается: так
+          переключатель читается как один элемент с двумя положениями. */}
+      {active && (
+        <motion.span
+          layoutId={reduced ? undefined : "search-view-mode"}
+          transition={{ duration: reduced ? 0 : 0.26, ease: [0.22, 1, 0.36, 1] }}
+          className="squircle absolute inset-0 rounded-db-xs bg-db-surface-base"
+          aria-hidden
+        />
+      )}
+
+      <span className="relative flex">{icon}</span>
     </button>
   );
 }

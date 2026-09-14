@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { motion, useReducedMotion } from "motion/react";
 import { Search } from "lucide-react";
 
 import { DbStripArrow } from "@/components/ui/db-strip-arrow";
@@ -29,6 +30,7 @@ export function PriceStrip({
   onChange: (next: PriceColumn) => void;
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
+  const reduced = useReducedMotion();
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
 
@@ -67,13 +69,28 @@ export function PriceStrip({
                 onClick={() => onChange(column)}
                 aria-pressed={active}
                 className={
-                  "squircle flex min-w-[136px] flex-1 flex-col items-center justify-center gap-0.5 rounded-db-md px-4 pt-3 pb-2 " +
-                  "transition-[background-color,transform] duration-300 ease-db active:scale-[0.98] " +
-                  (active
-                    ? "bg-db-surface-base"
-                    : "bg-db-surface-default hover:bg-db-surface-muted")
+                  "squircle relative flex min-w-[136px] flex-1 flex-col items-center justify-center gap-0.5 rounded-db-md px-4 pt-3 pb-2 " +
+                  "transition-[background-color,transform] duration-300 ease-db active:scale-[0.97] " +
+                  (active ? "" : "hover:bg-db-surface-muted")
                 }
               >
+                {/*
+                 * Жёлтая подложка не зажигается на новой дате и не гаснет на
+                 * старой — она переезжает: один `layoutId` на всю ленту.
+                 * Так видно, что выбор один и куда именно он перешёл.
+                 */}
+                {active && (
+                  <motion.span
+                    layoutId={reduced ? undefined : "price-strip-active"}
+                    transition={{ duration: reduced ? 0 : 0.3, ease: [0.22, 1, 0.36, 1] }}
+                    className="squircle absolute inset-0 rounded-db-md bg-db-surface-base"
+                    aria-hidden
+                  />
+                )}
+
+                <span
+                  className="relative flex flex-col items-center gap-0.5"
+                >
                 <span
                   className={
                     "text-db-micro " +
@@ -99,6 +116,7 @@ export function PriceStrip({
                     <span className="sr-only">Посмотреть цены</span>
                   </span>
                 )}
+                </span>
               </button>
             );
           })}

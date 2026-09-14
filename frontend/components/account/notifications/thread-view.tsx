@@ -6,8 +6,9 @@ import { CheckCheck, Info, Paperclip, Send } from "lucide-react";
 
 import { AttachmentButton, AttachmentChips, useAttachments } from "./attachments";
 import { EmptyChatArt } from "./empty-chat-art";
+import { MessageAttachments } from "./message-attachments";
 import {
-  formatFileSize,
+  attachmentKindOf,
   type ChatMessage,
   type NotificationThread,
 } from "@app/core/mocks/notifications";
@@ -61,10 +62,25 @@ export function ThreadView({ thread }: { thread: NotificationThread | null }) {
         id: (current.at(-1)?.id ?? 0) + 1,
         author: "me",
         text,
-        // Вложения уходят отдельным полем, а не строкой в тексте: в сообщении
-        // они рисуются списком, и разбирать их обратно из текста было бы
-        // выдумыванием формата на ровном месте.
-        attachments: attachments.files.map((file) => ({ name: file.name, size: file.size })),
+        /*
+         * Вложения уходят отдельным полем, а не строкой в тексте: в сообщении
+         * они рисуются превью, и разбирать их обратно из текста было бы
+         * выдумыванием формата на ровном месте.
+         *
+         * `blob:`-ссылка — чтобы отправленное фото или видео сразу было видно
+         * в переписке. Настоящий адрес придёт с сервера вместе с ответом на
+         * загрузку и заменит эту ссылку (блокер B1).
+         */
+        attachments: attachments.files.map((file) => {
+          const kind = attachmentKindOf(file.type);
+
+          return {
+            name: file.name,
+            size: file.size,
+            kind,
+            url: kind === "file" ? undefined : URL.createObjectURL(file),
+          };
+        }),
         time: new Intl.DateTimeFormat("ru-RU", { hour: "2-digit", minute: "2-digit" }).format(
           new Date(),
         ),
@@ -142,26 +158,7 @@ export function ThreadView({ thread }: { thread: NotificationThread | null }) {
                 )}
 
                 {message.attachments && message.attachments.length > 0 && (
-                  <ul className="flex flex-col gap-1">
-                    {message.attachments.map((file) => (
-                      <li
-                        key={file.name}
-                        className="squircle flex items-center gap-2 rounded-db-xs bg-db-surface-default px-3 py-2"
-                      >
-                        <Paperclip
-                          className="size-4 shrink-0 text-db-text-secondary"
-                          strokeWidth={1.5}
-                          aria-hidden
-                        />
-                        <span className="truncate text-db-caption text-db-text-primary">
-                          {file.name}
-                        </span>
-                        <span className="ml-auto shrink-0 text-db-caption text-db-text-tertiary">
-                          {formatFileSize(file.size)}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
+                  <MessageAttachments items={message.attachments} />
                 )}
 
                 <span className="flex items-center justify-end gap-1 text-db-caption text-db-text-secondary">

@@ -21,24 +21,25 @@ export function TripCompactCard({ trip }: { trip: SearchTrip }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <article className="squircle flex w-full items-stretch rounded-db-xl">
-      <div className="ticket-notch-right squircle relative flex flex-1 flex-col gap-4 overflow-hidden rounded-l-db-xl bg-db-surface-default p-6 outline outline-1 -outline-offset-1 outline-db-border-subtle">
-        {/*
-         * Зелёная метка выгодного рейса. Это не прямая полоса, а серп: он
-         * повторяет скругление карточки, иначе на углах зелёный торчит
-         * прямыми уголками за пределы белого.
-         *
-         * Способ из макета: зелёный прямоугольник со скруглением карточки, а
-         * поверх него такой же белый, сдвинутый на 8px вправо. Видимой
-         * остаётся полоска между их левыми краями — она и повторяет изгиб.
-         */}
-        {trip.highlighted && (
-          <span className="pointer-events-none absolute inset-y-0 left-0 w-2 overflow-hidden" aria-hidden>
-            <span className="squircle absolute inset-y-0 left-0 w-20 rounded-l-db-xl bg-surface-base-success" />
-            <span className="squircle absolute inset-y-0 left-2 w-20 rounded-l-db-xl bg-db-surface-default" />
-            <span className="sr-only">Выгодный рейс</span>
-          </span>
-        )}
+    /*
+     * Отклик на наведение — только тень и цвет обводки: любой сдвиг двигал бы
+     * соседей в плотном списке, и строка «убегала» бы из-под курсора.
+     */
+    <article className="squircle group/card flex w-full items-stretch rounded-db-xl transition-[box-shadow] duration-300 ease-db hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)]">
+      {/*
+       * Зелёная метка выгодного рейса — левый бордер карточки, а не слой
+       * поверх неё. Бордер сам повторяет скругление: наложенные слои давали
+       * зелёную дугу шире полосы и вылезали за левый край.
+       */}
+      <div
+        className={
+          "ticket-notch-right squircle relative flex flex-1 flex-col gap-4 overflow-hidden " +
+          "rounded-l-db-xl bg-db-surface-default p-6 outline outline-1 -outline-offset-1 " +
+          "outline-db-border-subtle " +
+          (trip.highlighted ? "border-l-8 border-surface-base-success" : "")
+        }
+      >
+        {trip.highlighted && <span className="sr-only">Выгодный рейс</span>}
 
         <TripSchedule trip={trip} />
 
@@ -72,7 +73,7 @@ export function TripCompactCard({ trip }: { trip: SearchTrip }) {
         </div>
       </div>
 
-      <div className="ticket-notch-left squircle relative flex w-[320px] shrink-0 flex-col justify-between gap-4 rounded-r-db-xl bg-db-surface-default p-6 outline outline-1 -outline-offset-1 outline-db-border-subtle">
+      <div className="ticket-notch-left squircle relative flex w-[320px] shrink-0 flex-col justify-between gap-4 rounded-r-db-xl bg-db-surface-default p-6 outline outline-1 -outline-offset-1 outline-db-border-subtle transition-[outline-color] duration-300 ease-db group-hover/card:outline-db-border-default">
         <span
           className="ticket-perforation pointer-events-none absolute inset-y-3 -left-0.5 w-1"
           aria-hidden

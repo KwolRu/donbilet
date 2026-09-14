@@ -79,6 +79,39 @@ await step(
   "notifications-reply.png",
 );
 
+await step(
+  "вложения показываются превью, видео открывается в плеере",
+  async () => {
+    await page.getByRole("button", { name: /Открыть фото/ }).first().waitFor({ timeout: 4000 });
+    await page.getByText("Квитанция об оплате.pdf").waitFor({ timeout: 4000 });
+
+    await page.getByRole("button", { name: /Смотреть видео/ }).click();
+    await page.getByRole("dialog").waitFor({ timeout: 4000 });
+    await page.waitForTimeout(1200);
+
+    const state = await page.evaluate(() => {
+      const video = document.querySelector("video");
+      return video ? { paused: video.paused, time: video.currentTime } : null;
+    });
+    if (!state || state.paused || state.time <= 0) {
+      throw new Error(`видео не играет: ${JSON.stringify(state)}`);
+    }
+  },
+  "notifications-media.png",
+);
+
+await step("просмотрщик листает вложения и закрывается", async () => {
+  await page.getByRole("button", { name: "Предыдущее вложение" }).click();
+  await page.waitForTimeout(500);
+  // Листнули назад — теперь открыто фото, видео в просмотрщике нет.
+  if (await page.getByRole("dialog").locator("video").count()) {
+    throw new Error("после листания всё ещё видео");
+  }
+
+  await page.keyboard.press("Escape");
+  await page.getByRole("dialog").waitFor({ state: "hidden", timeout: 4000 });
+});
+
 await step("поиск сужает список уведомлений", async () => {
   const search = page.getByRole("textbox", { name: "Поиск по уведомлениям" });
   const before = await page.locator("aside, ul li button[aria-current]").count();
@@ -162,9 +195,12 @@ await step(
     await page.getByRole("button", { name: "Отправить сообщение" }).click();
     await page.waitForTimeout(500);
 
-    // Файлы ушли в сообщение, а строка ввода очистилась.
+    // Файлы ушли в сообщение, а строка ввода очистилась. Документ показан
+    // плашкой с именем, картинка — превью, поэтому ищем их по-разному.
     await page.getByText("ticket.pdf").last().waitFor({ timeout: 4000 });
-    await page.getByText("receipt.jpg").last().waitFor({ timeout: 4000 });
+    await page
+      .getByRole("button", { name: "Открыть фото receipt.jpg" })
+      .waitFor({ timeout: 4000 });
     if (await page.getByRole("button", { name: /^Убрать файл/ }).count()) {
       throw new Error("вложения остались в поле после отправки");
     }

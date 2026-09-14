@@ -3,9 +3,10 @@
 import { useState } from "react";
 import { ArrowLeftRight } from "lucide-react";
 
-import { DbButton } from "@/components/ui/db-button";
+import { DbLinkButton } from "@/components/ui/db-button";
 import { DbChip, DbSegmentedControl, DbToggle } from "@/components/ui/db-primitives";
 import { MOCK_CITIES, type MockCity } from "@app/core/mocks/landing";
+import { PUBLIC_ROUTES } from "@/lib/routing/public-paths";
 import { CityField } from "./city-field";
 import { DateField } from "./date-field";
 import { DEFAULT_PASSENGERS, PassengersField, type Passengers } from "./passengers-field";
@@ -116,9 +117,20 @@ export function SearchForm() {
 
             <PassengersField label="Кто едет" value={passengers} onChange={setPassengers} />
 
-            <DbButton variant="primary" size="large" className="w-[231px] shrink-0">
+            {/*
+             * Ссылка, а не кнопка: поиск — это переход на страницу выдачи, и
+             * браузер должен вести себя с ним как с переходом (средняя кнопка,
+             * новая вкладка, предзагрузка). Заодно экран загрузки между зонами
+             * ловит именно клик по ссылке.
+             */}
+            <DbLinkButton
+              href={PUBLIC_ROUTES.search}
+              variant="primary"
+              size="large"
+              className="w-[231px] shrink-0"
+            >
               Найти
-            </DbButton>
+            </DbLinkButton>
 
             {/* Кнопка обмена городами стоит на стыке полей «Откуда» и «Куда». */}
             <button
