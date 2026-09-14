@@ -6,7 +6,7 @@ import { useState } from "react";
 import { DottedLinkText } from "@/components/common/dotted-link-text";
 import { DbButton } from "@/components/ui/db-button";
 import { DbCheckbox } from "@/components/ui/db-checkbox";
-import { MOCK_ORDER } from "@app/core/mocks/order";
+import { getOrderPrice, getSeatSelectionPrice, MOCK_ORDER } from "@app/core/mocks/order";
 import { useOrderStore } from "@app/core/store/order";
 import { selectRussianPlural } from "@app/core/utils/russian-plural";
 
@@ -34,11 +34,15 @@ export function OrderSummaryCard() {
   const checkoutStep = useOrderStore((state) => state.checkoutStep);
   const passengerCount = useOrderStore((state) => state.passengerCount);
   const selectedSeats = useOrderStore((state) => state.selectedSeats);
+  const passengerExtras = useOrderStore((state) => state.passengerExtras);
   const goToPassengers = useOrderStore((state) => state.goToPassengers);
   const goToPayment = useOrderStore((state) => state.goToPayment);
+  const completeOrder = useOrderStore((state) => state.completeOrder);
   const detailsStage = checkoutStep !== "seats";
   const paymentStage = checkoutStep === "payment";
-  const selectionComplete = selectedSeats.length === passengerCount;
+  const selectionComplete = selectedSeats.length > 0 && selectedSeats.length === passengerCount;
+  const seatSelectionPrice = getSeatSelectionPrice(selectedSeats.length);
+  const detailsPrice = getOrderPrice(passengerCount, passengerExtras);
   const seatLabel = selectedSeats.length
     ? selectedSeats.length > 1
       ? `${selectedSeats.slice(0, -1).join(", ")} и ${selectedSeats.at(-1)}`
@@ -145,11 +149,11 @@ export function OrderSummaryCard() {
 
         <div className="flex flex-col gap-3">
           <strong className="text-[36px] leading-10 font-medium text-db-text-primary">
-            {detailsStage ? MOCK_ORDER.passengerStepTotal : MOCK_ORDER.total}
+            {detailsStage ? detailsPrice.total : seatSelectionPrice.total}
           </strong>
 
           <div className="flex flex-col gap-2">
-            {(detailsStage ? MOCK_ORDER.passengerStepPriceLines : MOCK_ORDER.priceLines).map((line) => (
+            {(detailsStage ? detailsPrice.lines : seatSelectionPrice.lines).map((line) => (
               <PriceLine key={line.label} {...line} />
             ))}
           </div>
@@ -181,7 +185,7 @@ export function OrderSummaryCard() {
               fullWidth
               className="h-14 !rounded-db-md"
               disabled={!passengerDataConfirmed || !personalDataAccepted || !offerAccepted}
-              onClick={paymentStage ? () => undefined : goToPayment}
+              onClick={paymentStage ? completeOrder : goToPayment}
             >
               {paymentStage ? "Оплатить" : "Перейти к оплате"}
             </DbButton>
@@ -197,6 +201,8 @@ export function OrderSummaryCard() {
               aria-label={
                 selectionComplete
                   ? "Ввести данные пассажиров"
+                  : passengerCount === 0
+                    ? "Выберите хотя бы одно место"
                   : passengerCount === 3
                     ? "Сначала выберите три места"
                     : `Сначала выберите ${passengerCount} ${selectRussianPlural(passengerCount, {

@@ -40,7 +40,7 @@ function Seat({
       disabled={disabled}
       onClick={onToggle}
       className={
-        "squircle flex size-full items-center justify-center rounded-db-sm text-[18px] leading-6 font-medium " +
+        "squircle flex size-full cursor-pointer items-center justify-center rounded-db-sm text-[18px] leading-6 font-medium " +
         "transition-[background-color,filter,transform] duration-300 ease-db active:scale-95 " +
         "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-db-surface-base " +
         (selected

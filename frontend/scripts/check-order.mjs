@@ -107,11 +107,13 @@ try {
   if (await continueButton.isDisabled()) throw new Error("кнопка продолжения должна быть доступна");
 
   await page.getByRole("button", { name: "Место 25, выбрано" }).click();
-  if (!(await page.getByRole("button", { name: "Сначала выберите три места" }).isDisabled())) {
-    throw new Error("кнопка продолжения не отключилась после снятия места");
+  await page.getByText("3 109 ₽", { exact: true }).waitFor();
+  if (await continueButton.isDisabled()) {
+    throw new Error("нельзя продолжить с двумя выбранными вручную местами");
   }
 
   await page.getByRole("button", { name: "Место 24" }).click();
+  await page.getByText("3 854 ₽", { exact: true }).waitFor();
   if (await continueButton.isDisabled()) throw new Error("кнопка не включилась после выбора третьего места");
 
   await page.getByRole("button", { name: "Автоматический выбор мест" }).click();
@@ -138,11 +140,28 @@ try {
   if (!(await page.getByText("2 пасс").isVisible())) {
     throw new Error("количество пассажиров в карточке заказа не обновилось");
   }
+  if (!(await page.getByText("3 109 ₽", { exact: true }).isVisible())) {
+    throw new Error("стоимость не обновилась после уменьшения количества пассажиров");
+  }
 
   await page.getByRole("button", { name: "Увеличить количество пассажиров" }).click();
 
   // Эталонный кадр хранит состояние «Выбор из списка» с местами 25, 29, 30.
   await page.getByRole("button", { name: "Выбор из списка" }).click();
+  if ((await page.getByRole("button", { name: /Место \d+, выбрано/ }).count()) !== 0) {
+    throw new Error("автоматически назначенные места не сбросились перед ручным выбором");
+  }
+  for (const seat of [25, 29, 30]) {
+    await page.getByRole("button", { name: `Место ${seat}` }).click();
+    if ((await page.getByRole("button", { name: `Место ${seat}, выбрано` }).getAttribute("aria-pressed")) !== "true") {
+      throw new Error(`место ${seat} не выбирается вручную`);
+    }
+  }
+  await page.getByRole("button", { name: "Место 24" }).click();
+  if (!(await page.getByText("4 пасс").isVisible())) {
+    throw new Error("ручной выбор остался ограничен тремя пассажирами");
+  }
+  await page.getByRole("button", { name: "Место 24, выбрано" }).click();
 
   await page.screenshot({ path: "shots/order/order-1920.png", fullPage: true });
 
@@ -166,7 +185,7 @@ try {
     throw new Error(`этап «Пассажиры» должен быть жёлтым, получено ${passengerStepBackground}`);
   }
 
-  await page.getByText("5 875 ₽").waitFor();
+  await page.getByText("5 499 ₽", { exact: true }).waitFor();
   const paymentButton = page.getByRole("button", { name: "Перейти к оплате" });
   if (await paymentButton.isDisabled()) throw new Error("кнопка перехода к оплате должна быть доступна");
 
@@ -200,10 +219,15 @@ try {
     throw new Error("кнопка оплаты не отключилась после снятия обязательного согласия");
   }
   await page.getByRole("checkbox", { name: /данные пассажиров указаны верно/ }).click();
+  await page.getByRole("checkbox", { name: /Страхование пассажира/ }).first().click();
+  await page.getByText("5 888 ₽", { exact: true }).waitFor();
+  await page.getByRole("checkbox", { name: /Страхование пассажира/ }).first().click();
+  await page.getByText("5 499 ₽", { exact: true }).waitFor();
   await page.screenshot({ path: "shots/order/order-passengers-1920.png", fullPage: true });
 
   await paymentButton.click();
   await page.getByRole("heading", { name: "Оплата" }).waitFor();
+  await page.getByText("5 499 ₽", { exact: true }).waitFor();
   await assertBox(page.locator("[data-order-payment]"), { width: 755 }, "форма оплаты");
   if ((await page.getByRole("radio").count()) !== 4) {
     throw new Error("на шаге оплаты должны отображаться четыре способа оплаты");
@@ -243,6 +267,19 @@ try {
   }
   await page.screenshot({ path: "shots/order/order-payment-1920.png", fullPage: true });
 
+  await page.getByRole("button", { name: "Оплатить" }).click();
+  await page.getByRole("heading", { name: "Билет куплен" }).waitFor();
+  await assertBox(page.locator("[data-order-success]"), { x: 350, width: 1220 }, "экран покупки");
+  await page.getByText("Заказ DB7843291 подтверждён").waitFor();
+  await page.getByRole("button", { name: "Скачать билет" }).waitFor();
+  if (await page.getByRole("list", { name: "Этапы оформления" }).isVisible()) {
+    throw new Error("этапы оформления остались на экране успешной покупки");
+  }
+  if ((await page.locator("[data-order-success] article").count()) !== 6) {
+    throw new Error("после покупки должны отображаться шесть вариантов жилья");
+  }
+  await page.screenshot({ path: "shots/order/order-success-1920.png", fullPage: true });
+
   if (errors.length) throw new Error(`ошибки браузера:\n${errors.join("\n")}`);
 
   const scaledPage = await browser.newPage({ viewport: { width: 1710, height: 979 } });
@@ -262,7 +299,7 @@ try {
   await scaledPage.screenshot({ path: "shots/order/order-1710.png" });
   await scaledPage.close();
 
-  console.log(`OK ${baseUrl}/order — layout 1920/1710, seats, modes`);
+  console.log(`OK ${baseUrl}/order — layout 1920/1710, seats, passengers, payment, success`);
 } finally {
   await browser.close();
 }

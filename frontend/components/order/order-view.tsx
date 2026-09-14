@@ -7,6 +7,7 @@ import { OrderProgress } from "./order-progress";
 import { OrderSummaryCard } from "./order-summary-card";
 import { PassengerDetailsCard } from "./passenger-details-card";
 import { PaymentCard } from "./payment-card";
+import { OrderSuccess } from "./order-success";
 import { ReservationTimer } from "./reservation-timer";
 import { SeatSelectionCard } from "./seat-selection-card";
 import { useOrderStore } from "@app/core/store/order";
@@ -15,6 +16,8 @@ import { PUBLIC_ROUTES } from "@/lib/routing/public-paths";
 export function OrderView() {
   const checkoutStep = useOrderStore((state) => state.checkoutStep);
   const activeStep = checkoutStep === "payment" ? 2 : checkoutStep === "passengers" ? 1 : 0;
+
+  if (checkoutStep === "success") return <OrderSuccess />;
 
   return (
     <div

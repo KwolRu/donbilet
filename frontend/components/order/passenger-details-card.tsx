@@ -338,6 +338,7 @@ export function PassengerDetailsCard() {
   const passengerCount = useOrderStore((state) => state.passengerCount);
   const selectedSeats = useOrderStore((state) => state.selectedSeats);
   const setPassengerCount = useOrderStore((state) => state.setPassengerCount);
+  const setPassengerExtras = useOrderStore((state) => state.setPassengerExtras);
   const [passengers, setPassengers] = useState<PassengerDraft[]>(() =>
     Array.from(
       { length: ORDER_MAX_PASSENGERS },
@@ -359,11 +360,15 @@ export function PassengerDetailsCard() {
             index={index}
             seat={selectedSeats[index]}
             value={passenger}
-            onChange={(next) =>
+            onChange={(next) => {
               setPassengers((current) =>
                 current.map((item, itemIndex) => (itemIndex === index ? next : item)),
-              )
-            }
+              );
+              setPassengerExtras(index, {
+                insurance: next.insurance,
+                baggageCount: next.baggage ? next.baggageCount : 0,
+              });
+            }}
           />
         ))}
       </div>

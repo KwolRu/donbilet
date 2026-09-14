@@ -20,6 +20,11 @@ export type OrderPriceLine = {
   muted?: boolean;
 };
 
+export type OrderPassengerExtras = {
+  insurance: boolean;
+  baggageCount: number;
+};
+
 export type OrderSeatCell = number | "unavailable" | null;
 
 export type OrderMock = {
@@ -30,12 +35,89 @@ export type OrderMock = {
   duration: string;
   passengerCount: number;
   initialSeats: number[];
-  total: string;
-  priceLines: OrderPriceLine[];
-  passengerStepTotal: string;
-  passengerStepPriceLines: OrderPriceLine[];
   seatColumns: OrderSeatCell[][];
 };
+
+const ADULT_TICKET_PRICE = 1490;
+const CHILD_TICKET_PRICE = 745;
+const AGENCY_FEE = 129;
+const INSURANCE_PRICE = 389;
+const BAGGAGE_PRICE = 289;
+
+function formatRubles(value: number): string {
+  return `${new Intl.NumberFormat("ru-RU").format(value)} ₽`;
+}
+
+/**
+ * Предварительный расчёт до ввода данных пассажиров.
+ * В демо-заказе первые два пассажира взрослые, третий — ребёнок; все
+ * добавленные сверх них считаются взрослыми до подключения тарифного API.
+ */
+export function getSeatSelectionPrice(selectedSeatCount: number): {
+  total: string;
+  lines: OrderPriceLine[];
+} {
+  const count = Math.max(0, selectedSeatCount);
+  const childCount = count >= 3 ? 1 : 0;
+  const adultCount = count - childCount;
+  const total = adultCount * ADULT_TICKET_PRICE + childCount * CHILD_TICKET_PRICE + (count > 0 ? AGENCY_FEE : 0);
+  const lines: OrderPriceLine[] = [];
+
+  if (adultCount > 0) {
+    lines.push({
+      label: "Стоимость взрослого билета",
+      value:
+        adultCount > 1
+          ? `${formatRubles(ADULT_TICKET_PRICE)} х ${adultCount}`
+          : formatRubles(ADULT_TICKET_PRICE),
+    });
+  }
+  if (childCount > 0) {
+    lines.push({ label: "Стоимость детского билета", value: formatRubles(CHILD_TICKET_PRICE) });
+  }
+  if (count > 0) {
+    lines.push({ label: "Агентское вознаграждение", value: formatRubles(AGENCY_FEE), muted: true });
+  }
+
+  return { total: formatRubles(total), lines };
+}
+
+/** Итог для шагов пассажиров и оплаты с выбранными допуслугами. */
+export function getOrderPrice(
+  passengerCount: number,
+  extras: OrderPassengerExtras[],
+): { total: string; lines: OrderPriceLine[] } {
+  const base = getSeatSelectionPrice(passengerCount);
+  const activeExtras = extras.slice(0, passengerCount);
+  const insuranceCount = activeExtras.filter((item) => item.insurance).length;
+  const baggageCount = activeExtras.reduce((sum, item) => sum + item.baggageCount, 0);
+  const extrasTotal = insuranceCount * INSURANCE_PRICE + baggageCount * BAGGAGE_PRICE;
+  const lines = [...base.lines];
+  const fee = lines.pop();
+
+  if (insuranceCount > 0) {
+    lines.push({
+      label: "Страховка",
+      value:
+        insuranceCount > 1
+          ? `${formatRubles(INSURANCE_PRICE)} х ${insuranceCount}`
+          : formatRubles(INSURANCE_PRICE),
+    });
+  }
+  if (baggageCount > 0) {
+    lines.push({
+      label: "Багаж",
+      value:
+        baggageCount > 1
+          ? `${formatRubles(BAGGAGE_PRICE)} х ${baggageCount}`
+          : formatRubles(BAGGAGE_PRICE),
+    });
+  }
+  if (fee) lines.push(fee);
+
+  const baseTotal = Number(base.total.replace(/\D/g, ""));
+  return { total: formatRubles(baseTotal + extrasTotal), lines };
+}
 
 export const MOCK_ORDER: OrderMock = {
   reviews: 736,
@@ -57,20 +139,6 @@ export const MOCK_ORDER: OrderMock = {
   duration: "8 ч 30 м в пути",
   passengerCount: 3,
   initialSeats: [25, 29, 30],
-  total: "3 854 ₽",
-  priceLines: [
-    { label: "Стоимость взрослого билета", value: "1 490 ₽ х 2" },
-    { label: "Стоимость детского билета", value: "745 ₽" },
-    { label: "Агентское вознаграждение", value: "129 ₽", muted: true },
-  ],
-  passengerStepTotal: "5 875 ₽",
-  passengerStepPriceLines: [
-    { label: "Стоимость взрослого билета", value: "1 490 ₽ х 2" },
-    { label: "Стоимость детского билета", value: "745 ₽" },
-    { label: "Страховка", value: "349 ₽ х 2" },
-    { label: "Багаж", value: "289 ₽ х 3" },
-    { label: "Агентское вознаграждение", value: "129 ₽", muted: true },
-  ],
   // Автобус в макете расположен горизонтально: каждая внутренняя группа —
   // вертикальная колонка мест, null оставляет проход, unavailable — штриховку.
   seatColumns: [
