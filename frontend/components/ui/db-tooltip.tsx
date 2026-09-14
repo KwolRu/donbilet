@@ -21,10 +21,13 @@ import type { ReactNode } from "react";
 export function DbTooltip({
   children,
   role = "tooltip",
+  className = "",
 }: {
   children: ReactNode;
   /** `alert` — для сообщений об ошибке: их читает скринридер сразу. */
   role?: "tooltip" | "alert";
+  /** Локальная настройка внешнего контейнера, например ширины и позиции. */
+  className?: string;
 }) {
   const reduced = useReducedMotion();
 
@@ -36,7 +39,7 @@ export function DbTooltip({
       exit={reduced ? { opacity: 0 } : { opacity: 0, y: 4 }}
       transition={{ duration: reduced ? 0 : 0.25, ease: [0.22, 1, 0.36, 1] }}
       /* `bottom-full` + отступ на высоту хвостика: плашка стоит над элементом. */
-      className="pointer-events-none absolute bottom-full left-1/2 z-20 mb-1.5 w-max max-w-full -translate-x-1/2"
+      className={`pointer-events-none absolute bottom-full left-1/2 z-20 mb-1.5 w-max max-w-full -translate-x-1/2 ${className}`}
     >
       <div className="squircle rounded-db-sm bg-db-surface-primary px-3 py-2 text-[14px] leading-5 text-db-text-inverse">
         {children}

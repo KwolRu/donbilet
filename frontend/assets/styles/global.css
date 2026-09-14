@@ -748,6 +748,57 @@
   -webkit-mask-composite: source-in;
 }
 
+/* Горизонтальный стык карточки заказа: те же физические вырубки и просечка,
+ * что у билетов кабинета, только линия отрыва идёт слева направо. */
+@utility order-notch-bottom {
+  mask-image:
+    radial-gradient(circle 10px at 0 100%, transparent 98%, #000 100%),
+    radial-gradient(circle 10px at 100% 100%, transparent 98%, #000 100%);
+  mask-composite: intersect;
+  -webkit-mask-image:
+    radial-gradient(circle 10px at 0 100%, transparent 98%, #000 100%),
+    radial-gradient(circle 10px at 100% 100%, transparent 98%, #000 100%);
+  -webkit-mask-composite: source-in;
+}
+
+@utility order-notch-top {
+  mask-image:
+    radial-gradient(circle 10px at 0 0, transparent 98%, #000 100%),
+    radial-gradient(circle 10px at 100% 0, transparent 98%, #000 100%);
+  mask-composite: intersect;
+  -webkit-mask-image:
+    radial-gradient(circle 10px at 0 0, transparent 98%, #000 100%),
+    radial-gradient(circle 10px at 100% 0, transparent 98%, #000 100%);
+  -webkit-mask-composite: source-in;
+}
+
+@utility order-perforation-horizontal {
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--color-db-surface-muted) 0 5px,
+    transparent 5px 10px
+  );
+}
+
+/** Недоступное место: спокойная светлая штриховка из макета, без текста. */
+@utility order-seat-unavailable {
+  background: repeating-linear-gradient(
+    135deg,
+    var(--color-db-surface-muted) 0 4px,
+    var(--color-db-surface-default) 4px 8px
+  );
+}
+
+/* Checkout нарисован в Figma на полотне 1920px. На более узком десктопном
+ * окне уменьшаем его целиком, чтобы взаимное положение и визуальные размеры
+ * не менялись: при 1920px центральная колонка остаётся 1220px с полями 350px. */
+@media (max-width: 1919px) {
+  .order-design-viewport {
+    width: 1920px;
+    zoom: calc(100vw / 1920px);
+  }
+}
+
 /* ─── Полоса прокрутки в выпадающих панелях ─────────────────────────────────
  *
  * В макете это тонкий индикатор справа от списка, а не системный скроллбар.

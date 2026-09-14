@@ -16,6 +16,7 @@ type Props<T extends string> = {
   mode?: "text" | "icon";
   className?: string;
   buttonClassName?: string;
+  activeButtonClassName?: string;
   /** Растянуть на всю доступную ширину, сегменты делят пространство поровну. */
   fill?: boolean;
 };
@@ -27,6 +28,7 @@ export function SegmentedControl<T extends string>({
   mode = "text",
   className = "",
   buttonClassName = "",
+  activeButtonClassName = "",
   fill = false,
 }: Props<T>) {
   return (
@@ -38,6 +40,7 @@ export function SegmentedControl<T extends string>({
         <button
           key={option.value}
           type="button"
+          data-active={value === option.value}
           onClick={() => {
             if (value !== option.value) onChange(option.value);
           }}
@@ -45,7 +48,7 @@ export function SegmentedControl<T extends string>({
             mode === "icon" ? "w-8 px-0" : fill ? "min-w-0 flex-1 px-2 text-body-regular" : "px-4 text-body-regular"
           } ${buttonClassName} ${
             value === option.value
-              ? "bg-bg-surface-base-elevated text-primary-hover"
+              ? `bg-bg-surface-base-elevated text-primary-hover ${activeButtonClassName}`
               : "text-text-secondary hover:text-text-primary"
           }`}
           style={{ cornerShape: "squircle" } as CSSProperties}

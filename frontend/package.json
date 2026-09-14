@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "format": "prettier --write .",
-    "check:ui": "node scripts/check-search-form.mjs && node scripts/check-header.mjs && node scripts/check-login.mjs && node scripts/check-profile.mjs && node scripts/check-tickets.mjs && node scripts/check-notifications.mjs && node scripts/check-favorites.mjs && node scripts/check-search.mjs && node scripts/check-route-loader.mjs && node scripts/check-landing-reveal.mjs",
+    "check:ui": "node scripts/check-search-form.mjs && node scripts/check-header.mjs && node scripts/check-login.mjs && node scripts/check-profile.mjs && node scripts/check-tickets.mjs && node scripts/check-notifications.mjs && node scripts/check-favorites.mjs && node scripts/check-search.mjs && node scripts/check-route-loader.mjs && node scripts/check-landing-reveal.mjs && node scripts/check-order.mjs",
     "check:figma": "node scripts/figma-compare.mjs",
     "shot": "node scripts/shot.mjs"
   },

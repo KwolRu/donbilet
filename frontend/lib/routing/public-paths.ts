@@ -47,6 +47,7 @@ export const publicRoute = {
  * (ТЗ п. 2.10: «Оформление покупки билета не требует подтверждения email»).
  */
 export const CHECKOUT_ROUTES = {
+  order: "/order",
   booking: "/booking",
   seatSelection: "/seat",
   passengerInfo: "/personal-information",
