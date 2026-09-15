@@ -6,16 +6,35 @@
 
 ## Снимок
 
-- Обновлено: `2026-09-11`
+- Обновлено: `2026-09-14`
 - Roadmap: версия `2`, статус `approved` (v2: legacy не переносится)
-- Активная фаза: `Ф3 — Публичный сайт` (главная готова, остальные страницы — нет)
+- Активная фаза: `Ф3 — Публичный сайт`; точечно начата UI-часть Ф4 на моках
 - Завершено: `Ф1 — дизайн-система по макету`
-- Ветка: `main`
-- Baseline: `092cc02`
-- Состояние worktree: `незакоммиченные изменения — дизайн-система и главная страница`
+- Ветка: `main-kwol`
+- Baseline: `8a7f54e`
+- Состояние worktree: `незакоммиченные изменения — экран /order, выбор места`
 - Прогресс по ТЗ: `0 / 26 пунктов принято`
 
 ## Подтверждённо готово
+
+### Ф4 — воронка покупки, frontend на моках
+
+Evidence — в
+[`reports/2026-09-14-order-seat-selection-ui.md`](reports/2026-09-14-order-seat-selection-ui.md).
+
+- **Маршрут `/order`**: первый шаг оформления «Выбор места» по переданному
+  Figma-to-code и двум эталонным кадрам.
+- **Компонентная декомпозиция:** progress, таймер, selector, схема мест,
+  сводка рейса и разбивка цены; данные в mock, выбор мест в Zustand-store.
+- **Переиспользован UI-кит:** общие header/footer, `DbButton`,
+  `SegmentedControl`, `DottedLinkText`, токены, squircle и ticket-перфорация.
+- **Интерактивность:** ручной/автоматический режим, максимум три места,
+  disabled-состояние CTA при неполном выборе, живой таймер.
+- **Проверки:** TypeScript и production build чистые; lint — 0 ошибок;
+  `scripts/check-order.mjs` проверяет геометрию и состояния мест.
+
+Ограничение: только фронтенд и моки; переход на шаг пассажиров и API не входят
+в текущий handoff. Статус Ф4 в roadmap не менялся.
 
 ### Ф1 — дизайн-система и главная страница
 
@@ -206,6 +225,7 @@ iDempiere не выводится (R3, R4).
 
 ## Последние evidence
 
+- [`reports/2026-09-14-order-seat-selection-ui.md`](reports/2026-09-14-order-seat-selection-ui.md) — `/order`, выбор места на моках
 - [`reports/2026-09-11-phase-01-design-system-and-landing.md`](reports/2026-09-11-phase-01-design-system-and-landing.md) — дизайн-система и главная страница
 - [`reports/2026-09-07-phase-00-infrastructure.md`](reports/2026-09-07-phase-00-infrastructure.md) — развёртывание шаблона и инфраструктуры
 - [`reports/2026-08-23-phase-00-audit-workflow.md`](reports/2026-08-23-phase-00-audit-workflow.md) — каркас audit-workflow

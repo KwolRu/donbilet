@@ -39,10 +39,12 @@ export function HotelsStrip({
       русские предлоги и окончания зависят от слова, и API отдаст готовую форму. */
   cityIn,
   className = "",
+  actionVariant = "outlined",
 }: {
   cityIn: string;
   /** Отступы задаёт вызывающая сторона: секция стоит внутри чужой колонки. */
   className?: string;
+  actionVariant?: "outlined" | "plain";
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [atStart, setAtStart] = useState(true);
@@ -75,7 +77,12 @@ export function HotelsStrip({
 
         <button
           type="button"
-          className="squircle flex shrink-0 items-center gap-1 rounded-db-xs bg-db-surface-default p-2 outline outline-1 -outline-offset-1 outline-db-border-subtle transition-colors duration-300 ease-db hover:bg-db-surface-muted"
+          className={
+            "flex shrink-0 items-center gap-1 transition-colors duration-300 ease-db hover:text-db-text-secondary " +
+            (actionVariant === "outlined"
+              ? "squircle rounded-db-xs bg-db-surface-default p-2 outline outline-1 -outline-offset-1 outline-db-border-subtle hover:bg-db-surface-muted"
+              : "py-1")
+          }
         >
           <span className="px-1 text-db-micro text-db-text-primary">Все отели и квартиры</span>
           <ArrowRight className="size-3 text-db-text-primary" strokeWidth={1.5} aria-hidden />
@@ -166,4 +173,3 @@ export function HotelsStrip({
     </section>
   );
 }
-

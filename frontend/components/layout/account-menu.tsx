@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { History, MessageSquare, Ticket, User } from "lucide-react";
+import { CircleUserRound, History, MessageSquare, Ticket, User } from "lucide-react";
 
 import { DbLinkButton } from "@/components/ui/db-button";
 import { ACCOUNT_ROUTES, AUTH_ROUTES } from "@/lib/routing/public-paths";
@@ -33,13 +33,11 @@ export function AccountMenu({ dark = false }: { dark?: boolean }) {
   return (
     <div ref={ref} className="relative">
       {/*
-       * Жёлтая заливка — активное состояние, то есть раскрытое меню. В покое
-       * кнопка белая с обводкой, как соседняя «Избранное»: в макете это один и
-       * тот же иконочный элемент в двух состояниях.
+       * На светлой шапке кнопка профиля всегда жёлтая — это отдельный акцентный
+       * элемент макета, в отличие от соседней кнопки «Избранное».
        *
-       * `dark` — шапка на тёмной подложке (страница прокручена). Тогда покой
-       * рисуется прозрачной кнопкой со светлой обводкой: белая плашка рядом с
-       * такой же прозрачной «Избранное» выглядела бы случайной.
+       * `dark` — шапка на тёмной подложке (страница прокручена). В закрытом
+       * состоянии там сохраняется прозрачная кнопка со светлой обводкой.
        */}
       <button
         type="button"
@@ -50,14 +48,12 @@ export function AccountMenu({ dark = false }: { dark?: boolean }) {
           "squircle flex items-center justify-center gap-1 rounded-db-sm p-3 " +
           "outline outline-1 -outline-offset-1 " +
           "transition-[background-color,color,outline-color] duration-300 ease-out " +
-          (open
+          (open || !dark
             ? "bg-db-button-primary-bg text-db-text-primary outline-transparent"
-            : dark
-              ? "bg-transparent text-db-text-inverse outline-db-border-strong hover:bg-white/10"
-              : "bg-db-button-lianer-bg text-db-text-primary outline-db-border-subtle hover:bg-db-surface-muted")
+            : "bg-transparent text-db-text-inverse outline-db-border-strong hover:bg-white/10")
         }
       >
-        <User className="size-4" strokeWidth={1.5} aria-hidden />
+        <CircleUserRound className="size-4" strokeWidth={1.5} aria-hidden />
       </button>
 
       <DbPopoverPanel

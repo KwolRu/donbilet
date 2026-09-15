@@ -15,13 +15,14 @@ interface RadioGroupProps {
   onChange: (value: string) => void;
   children: ReactNode;
   className?: string;
+  ariaLabel?: string;
 }
 
-export function RadioGroup({ value, onChange, children, className }: RadioGroupProps) {
+export function RadioGroup({ value, onChange, children, className, ariaLabel }: RadioGroupProps) {
   const name = useId();
   return (
     <RadioGroupContext.Provider value={{ value, onChange, name }}>
-      <div className={className} role="radiogroup">
+      <div className={className} role="radiogroup" aria-label={ariaLabel}>
         {children}
       </div>
     </RadioGroupContext.Provider>
@@ -32,9 +33,11 @@ interface RadioItemProps {
   value: string;
   children: ReactNode;
   className?: string;
+  size?: "small" | "large";
+  filled?: boolean;
 }
 
-export function RadioItem({ value, children, className }: RadioItemProps) {
+export function RadioItem({ value, children, className, size = "small", filled = false }: RadioItemProps) {
   const ctx = useContext(RadioGroupContext);
   if (!ctx) throw new Error("RadioItem must be used inside RadioGroup");
 
@@ -57,14 +60,23 @@ export function RadioItem({ value, children, className }: RadioItemProps) {
       />
       <span
         className={[
-          "relative flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
+          "pointer-events-none relative flex shrink-0 items-center justify-center rounded-full transition-colors",
+          size === "large" ? "size-6 border" : "size-4 border-2",
           checked
-            ? "border-primary bg-white"
+            ? filled
+              ? "border-db-surface-base bg-db-surface-base"
+              : "border-primary bg-white"
             : "border-border-default bg-bg-surface-base-default hover:border-border-hover",
         ].join(" ")}
       >
         {checked && (
-          <span className="h-2 w-2 rounded-full bg-primary" />
+          <span
+            className={
+              (size === "large" ? "size-3" : "size-2") +
+              " rounded-full " +
+              (filled ? "bg-db-surface-default" : "bg-primary")
+            }
+          />
         )}
       </span>
       {children}
